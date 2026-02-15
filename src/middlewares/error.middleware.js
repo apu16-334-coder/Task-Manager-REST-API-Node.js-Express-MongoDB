@@ -1,3 +1,10 @@
+const AppError = require("../utils/AppError.js")
+
+// This catches routes that don't exist
+const noRouteFound = (req, res, next) => {
+    next(new AppError(404, `Route Not Found - ${req.url}`));
+};
+
 const globalErrorHandler = (err, req, res, next)=>{
     console.error(err);
 
@@ -7,4 +14,4 @@ const globalErrorHandler = (err, req, res, next)=>{
     })
 }
 
-module.exports = globalErrorHandler
+module.exports = {noRouteFound, globalErrorHandler}
