@@ -1,3 +1,4 @@
+const globalErrorHandler = require("./middlewares/error.middleware.js")
 const express = require("express")
 const app = express()
 
@@ -8,12 +9,12 @@ app.get("/", (req,res)=>{
 })
 
 // Invalid Rourte Error Handler
-
 app.use((req,res,next)=>{   
-    res.status(400).json({
-        success: false,
-        message: "Route not Found"
-    });
+    const error = new Error("Route not Found");
+    error.status = 404
+    next(error)
 })
+
+app.use(globalErrorHandler)
 
 module.exports = app
