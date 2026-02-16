@@ -17,9 +17,7 @@ This project is being developed to demonstrate real-world backend engineering pr
 - Environment configuration using dotenv
 
 ## Implemented APIs
-🚧 No APIs implemented yet.  
-The project structure and core backend setup are completed.  
-API development will be added incrementally.
+- POST /users — Create user
 
 ## Tech Stack
 - Node.js
