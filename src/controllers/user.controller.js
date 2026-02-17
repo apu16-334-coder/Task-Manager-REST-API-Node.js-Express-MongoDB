@@ -21,4 +21,18 @@ const createUser = async( req, res, next)=> {
     }
 }
 
-module.exports = {createUser}
+// Get All Users
+const getAllUsers = async( req, res, next)=> {
+    try {
+        const users = await Users.find();  
+
+        res.status(201).json({
+            success: true,
+            data: users
+        })
+    } catch (error) {
+        next(error)
+    }
+}
+
+module.exports = {createUser,getAllUsers}

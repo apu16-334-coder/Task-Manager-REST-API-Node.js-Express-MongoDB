@@ -1,3 +1,4 @@
+const { json } = require("express");
 const AppError = require("../utils/AppError.js")
 
 // This catches routes that don't exist
@@ -6,12 +7,11 @@ const noRouteFound = (req, res, next) => {
 };
 
 const globalErrorHandler = (err, req, res, next)=>{
-    console.log(err)
     console.error(err.stack);
 
     // A. Duplicate Key (e.g., unique email, password)
     if (err.code === 11000) {
-        err.status = 400;
+        err = new AppError(400, `${Object.keys(err.keyValue)} is already exists`);
     }
 
     if (err.name === "ValidationError" || err.name === "CastError") {
