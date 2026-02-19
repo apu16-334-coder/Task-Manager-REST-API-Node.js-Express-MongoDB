@@ -18,7 +18,11 @@ This project is being developed to demonstrate real-world backend engineering pr
 
 ## Implemented APIs
 - POST /users — Create user
-- Get /users — Get all users
+- GET /users — Get all users
+- GET /users/:id — Get a particular user
+- PUT /users/:id — Edit a partcular user
+- DELETE /users/:id — Delete a partcular user
+
 
 ## Tech Stack
 - Node.js

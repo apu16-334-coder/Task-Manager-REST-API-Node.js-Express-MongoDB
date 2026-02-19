@@ -80,4 +80,23 @@ const editUser = async( req, res, next)=> {
     }
 }
 
-module.exports = { createUser, getAllUsers, getUser, editUser }
+/** @type {Controller} */
+// Get a particular User
+const deleteUser = async( req, res, next)=> {
+    try {
+        const user = await Users.findByIdAndDelete(req.params.id);
+
+        if( !user) {
+            return next(new AppError(404, "User not found"));
+        }
+
+        res.status(201).json({
+            success: true,
+            message: "successfully deleted"
+        })
+    } catch (error) {
+        next(error)
+    }
+}
+
+module.exports = { createUser, getAllUsers, getUser, editUser, deleteUser }
