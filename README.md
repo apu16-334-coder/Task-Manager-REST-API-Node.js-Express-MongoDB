@@ -18,6 +18,7 @@ This project is being developed to demonstrate real-world backend engineering pr
 
 ## Implemented APIs
 - POST /users — Create user
+- Get /users — Get all users
 
 ## Tech Stack
 - Node.js
