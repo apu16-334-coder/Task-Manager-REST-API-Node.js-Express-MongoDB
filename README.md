@@ -22,6 +22,11 @@ This project is being developed to demonstrate real-world backend engineering pr
 - GET /users/:id — Get a particular user
 - PUT /users/:id — Edit a partcular user
 - DELETE /users/:id — Delete a partcular user
+- POST /projects — Create project
+- GET /projects — Get all projects
+- GET /projects/:id — Get a particular project
+- PUT /projects/:id — Edit a partcular project
+- DELETE /projects/:id — Delete a partcular project
 
 
 ## Tech Stack
