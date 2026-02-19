@@ -9,13 +9,19 @@ const AppError = require("../utils/AppError.js")
 
 /** @type {Controller} */
 // Create User
-const createUser = async( req, res, next)=> {
+const createUser = async (req, res, next) => {
     try {
-        const {_id,name,email,role} = await Users.create(req.body)  
+        const { name, email, password } = req.body
+        const user = await Users.create({ name, email, password } )
 
         res.status(201).json({
             success: true,
-            data: {_id,name,email,role}
+            data: {
+                _id: user._id,
+                name: user.name,
+                email: user.email,
+                role: user.role
+            }
         })
     } catch (error) {
         next(error)
@@ -24,11 +30,12 @@ const createUser = async( req, res, next)=> {
 
 /** @type {Controller} */
 // Get All Users
-const getAllUsers = async( req, res, next)=> {
+const getAllUsers = async (req, res, next) => {
     try {
-        const users = await Users.find();  
+        const users = await Users.find()
+            .select('_id name email role')
 
-        res.status(201).json({
+        res.status(200).json({
             success: true,
             data: users
         })
@@ -39,15 +46,16 @@ const getAllUsers = async( req, res, next)=> {
 
 /** @type {Controller} */
 // Get a particular User
-const getUser = async( req, res, next)=> {
+const getUser = async (req, res, next) => {
     try {
-        const user = await Users.findById(req.params.id);
+        const user = await Users.findById(req.params.id)
+            .select('_id name email role')
 
-        if( !user) {
+        if (!user) {
             return next(new AppError(404, "User not found"));
         }
 
-        res.status(201).json({
+        res.status(200).json({
             success: true,
             data: user
         })
@@ -59,19 +67,20 @@ const getUser = async( req, res, next)=> {
 
 /** @type {Controller} */
 // Get a particular User
-const editUser = async( req, res, next)=> {
+const editUser = async (req, res, next) => {
     try {
+        const {name, email} = req.body;
         const user = await Users.findByIdAndUpdate(
-            req.params.id, 
-            req.body, 
-            {returnDocument: 'after', runValidators: true}
+            req.params.id,
+            {name, email},
+            { returnDocument: 'after', runValidators: true }
         );
 
-        if( !user) {
+        if (!user) {
             return next(new AppError(404, "User not found"));
         }
 
-        res.status(201).json({
+        res.status(200).json({
             success: true,
             data: user
         })
@@ -82,15 +91,15 @@ const editUser = async( req, res, next)=> {
 
 /** @type {Controller} */
 // Get a particular User
-const deleteUser = async( req, res, next)=> {
+const deleteUser = async (req, res, next) => {
     try {
         const user = await Users.findByIdAndDelete(req.params.id);
 
-        if( !user) {
+        if (!user) {
             return next(new AppError(404, "User not found"));
         }
 
-        res.status(201).json({
+        res.status(200).json({
             success: true,
             message: "successfully deleted"
         })
