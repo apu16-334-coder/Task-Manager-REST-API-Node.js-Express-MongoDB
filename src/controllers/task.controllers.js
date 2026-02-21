@@ -1,5 +1,6 @@
 const Tasks = require("../models/task.model.js")
 const AppError = require("../utils/AppError.js")
+const catchAsync = require("../utils/catchAsync.js")
 
 /**
  * @typedef {import('express').Request} Request
@@ -9,127 +10,114 @@ const AppError = require("../utils/AppError.js")
 
 /** @type {Controller} */
 // Create Tasks
-const createTask = async (req, res, next) => {
-    try {
-        const { title, description, project } = req.body
-        const task = await Tasks.create({ title, description, project });
+const createTask = catchAsync(async (req, res, next) => {
 
-        res.status(201).json({
-            success: true,
-            data: {
-                id: task._id,
-                title: task.title,
-                description: task.description,
-                priority: task.priority,
-                status: task.status,
-                createdAt: task.createdAt
-            }
-        })
-    } catch (error) {
-        next(error)
-    }
-}
+    const { title, description, project } = req.body
+    const task = await Tasks.create({ title, description, project });
+
+    res.status(201).json({
+        success: true,
+        data: {
+            id: task._id,
+            title: task.title,
+            description: task.description,
+            priority: task.priority,
+            status: task.status,
+            createdAt: task.createdAt
+        }
+    })
+
+})
 
 /** @type {Controller} */
 // Get all tasks
-const getAllTasks = async (req, res, next) => {
-    try {
-        const tasks = await Tasks.find()
+const getAllTasks = catchAsync(async (req, res, next) => {
 
-        res.status(200).json({
-            success: true,
-            data: tasks.map(t=> ({
-                id: t._id,
-                title: t.title,
-                description: t.description,
-                priority: t.priority,
-                status: t.status,
-                createdAt: t.createdAt
-            }))
-        })
-        
-    } catch (error) {
-        next(error)
-    }
-}
+    const tasks = await Tasks.find()
+
+    res.status(200).json({
+        success: true,
+        data: tasks.map(t => ({
+            id: t._id,
+            title: t.title,
+            description: t.description,
+            priority: t.priority,
+            status: t.status,
+            createdAt: t.createdAt
+        }))
+    })
+
+
+})
 
 /** @type {Controller} */
 // Get a particular task
-const getTask = async (req, res, next) => {
-    try {
-        const task = await Tasks.findById(req.params.id)
+const getTask = catchAsync(async (req, res, next) => {
+    const task = await Tasks.findById(req.params.id)
 
-        if(!task) {
-            return next(new AppError(404, 'Task not found'));
-        }
-
-        res.status(200).json({
-            success: true,
-            data: {
-                id: task._id,
-                title: task.title,
-                description: task.description,
-                priority: task.priority,
-                status: task.status,
-                createdAt: task.createdAt
-            }
-        })
-
-    } catch (error) {
-        next(error)
+    if (!task) {
+        return next(new AppError(404, 'Task not found'));
     }
-}
+
+    res.status(200).json({
+        success: true,
+        data: {
+            id: task._id,
+            title: task.title,
+            description: task.description,
+            priority: task.priority,
+            status: task.status,
+            createdAt: task.createdAt
+        }
+    })
+
+
+})
 
 /** @type {Controller} */
 // Edit a particular task
-const editTask = async (req, res, next) => {
-    try {
-        const { title, description, project } = req.body
-        const task = await Tasks.findByIdAndUpdate(
-            req.params.id,
-            { title, description, project },
-            { returnDocument: 'after', runValidators: true }
-        )
+const editTask = catchAsync(async (req, res, next) => {
 
-        if(!task) {
-            return next(new AppError(404, 'Task not found'));
-        }
+    const { title, description, project } = req.body
+    const task = await Tasks.findByIdAndUpdate(
+        req.params.id,
+        { title, description, project },
+        { returnDocument: 'after', runValidators: true }
+    )
 
-        res.status(200).json({
-            success: true,
-            data: {
-                id: task._id,
-                title: task.title,
-                description: task.description,
-                priority: task.priority,
-                status: task.status,
-                createdAt: task.createdAt
-            }
-        })
-
-    } catch (error) {
-        next(error)
+    if (!task) {
+        return next(new AppError(404, 'Task not found'));
     }
-}
+
+    res.status(200).json({
+        success: true,
+        data: {
+            id: task._id,
+            title: task.title,
+            description: task.description,
+            priority: task.priority,
+            status: task.status,
+            createdAt: task.createdAt
+        }
+    })
+
+
+})
 
 /** @type {Controller} */
 // Delete a particular task
-const deleteTask = async (req, res, next) => {
-    try {        
-        const task = await Tasks.findByIdAndDelete(req.params.id)
+const deleteTask = catchAsync(async (req, res, next) => {
+    const task = await Tasks.findByIdAndDelete(req.params.id)
 
-        if(!task) {
-            return next(new AppError(404, 'Task not found'));
-        }
-
-        res.status(200).json({
-            success: true,
-            message: 'succesfully delete'
-        })
-
-    } catch (error) {
-        next(error)
+    if (!task) {
+        return next(new AppError(404, 'Task not found'));
     }
-}
+
+    res.status(200).json({
+        success: true,
+        message: 'succesfully delete'
+    })
+
+})
 
 module.exports = { createTask, getAllTasks, getTask, editTask, deleteTask }

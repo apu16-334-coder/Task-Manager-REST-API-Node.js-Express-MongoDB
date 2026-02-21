@@ -55,6 +55,8 @@ Actively under development
     - middlewares/                             # Error handler, auth etc middlewares
         - middlewares/error.middleware.js      # Global & custom error middleware
     - config/db.js                             # Database configuration
-    - utils/AppError.js                        # Custom Error handling
-    - app.js                                   # Express application configuration
-- server.js                                    # Application entry point
+    - utils/                                   # Custom Error handling & utilities
+        - utils/AppError.js                    # Custom Error handling
+        - utils/AppError.js                    # Custom Error handling
+    - app.js          # Express application configuration
+- server.js        # Application entry point
