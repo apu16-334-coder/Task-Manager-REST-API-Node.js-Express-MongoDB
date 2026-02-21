@@ -1,6 +1,7 @@
 const {noRouteFound, globalErrorHandler} = require("./middlewares/error.middleware.js")
 const userRouter = require("./routes/user.route.js")
 const projectRouter = require("./routes/project.route.js")
+const taskRouter = require("./routes/task.route.js")
 
 const express = require("express")
 const app = express()
@@ -14,6 +15,8 @@ app.get("/", (req,res)=>{
 app.use("/users", userRouter);
 
 app.use("/projects", projectRouter);
+
+app.use("/tasks", taskRouter);
 
 
 

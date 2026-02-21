@@ -40,11 +40,21 @@ Actively under development
 
 ## Project Structure
 - src/
- - controllers/    # Request handling logic
- - models/         # Mongoose schemas & models
- - routes/         # API route definitions
- - middlewares/    # Global & custom middlewares
- - config/         # Database & environment configuration
- - utils/          # Custom Error handling & utilities
- - app.js          # Express application configuration
-- server.js        # Application entry point
+    - controllers/                             # Request handling logic
+        - controllers/user.controller.js       # User's request handling logic
+        - controllers/project.controller.js    # Project's request handling logic
+        - controllers/task.controller.js       # Task's request handling logic
+    - models/                                  # Mongoose schemas & models
+        - models/user.model.js                 # User schemas & model
+        - models/project.model.js              # project schemas & model
+        - models/task.model.js                 # task schemas & model
+    - routes/                                  # API route definitions
+        - routes/user.route.js                 # User API route definitions
+        - routes/project.route.js              # Project API route definitions        
+        - routes/task.route.js                 # Task API route definitions        
+    - middlewares/                             # Error handler, auth etc middlewares
+        - middlewares/error.middleware.js      # Global & custom error middleware
+    - config/db.js                             # Database configuration
+    - utils/AppError.js                        # Custom Error handling
+    - app.js                                   # Express application configuration
+- server.js                                    # Application entry point

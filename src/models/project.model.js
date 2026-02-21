@@ -3,9 +3,9 @@ const mongoose = require("mongoose");
 const projectSchema = new mongoose.Schema({
     title: {
         type: String,
-        require: [true, 'Project name is required'],
+        require: [true, 'Project title is required'],
         trim: true,
-        minlength: [3, 'Project name too short']
+        minlength: [3, 'Project title too short']
     },
 
     description: {
