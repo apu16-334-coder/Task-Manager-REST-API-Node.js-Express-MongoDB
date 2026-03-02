@@ -3,52 +3,93 @@ const AppError = require("../utils/AppError.js")
 const catchAsync = require("../utils/catchAsync.js")
 
 /**
- * @typedef {import('express').Request} Request
- * @typedef {import('express').Response} Response
- * @typedef {(req: Request, res: Response)=> void} Controller
+ * @typedef {import('express').RequestHandler} RequestHandler
  */
 
-/** @type {Controller} */
 // Create Tasks
-const createTask = catchAsync(async (req, res, next) => {
+const createTask = catchAsync(
+    /** @type {RequestHandler} */
+    async (req, res, next) => {
 
-    const { title, description, project } = req.body
-    const task = await Tasks.create({ title, description, project });
+        const { title, description, project } = req.body
+        const task = await Tasks.create({ title, description, project });
 
-    res.status(201).json({
-        success: true,
-        data: {
-            id: task._id,
-            title: task.title,
-            description: task.description,
-            priority: task.priority,
-            status: task.status,
-            createdAt: task.createdAt
-        }
-    })
+        res.status(201).json({
+            success: true,
+            data: {
+                id: task._id,
+                title: task.title,
+                description: task.description,
+                priority: task.priority,
+                status: task.status,
+                createdAt: task.createdAt
+            }
+        })
 
-})
+    }
+)
 
-/** @type {Controller} */
 // Get all tasks
-const getAllTasks = catchAsync(async (req, res, next) => {
+const getAllTasks = catchAsync(
+    /** @type {RequestHandler} */
+    async (req, res, next) => {
 
-    const tasks = await Tasks.find()
+        // 1. Build query object with filters
+        let queryObj = { ...req.query };
+        ['page', 'limit', 'sort', 'search'].forEach(el => delete queryObj[el]);
 
-    res.status(200).json({
-        success: true,
-        data: tasks.map(t => ({
-            id: t._id,
-            title: t.title,
-            description: t.description,
-            priority: t.priority,
-            status: t.status,
-            createdAt: t.createdAt
-        }))
-    })
+        let queryStr = JSON.stringify(queryObj);
+        queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, match => `$${match}`)
+        queryObj = JSON.parse(queryStr)
 
+        // 2. Build Mongoose query
+        let query = Tasks.find(queryObj)
 
-})
+        // 3. Add search
+        if (req.query.search) {
+            let query = Tasks.find({
+                $or: [
+                    { title: { $regex: req.query.search, $options: 'i' } },
+                    { description: { $regex: req.query.search, $options: 'i' } }
+                ]
+            })
+        }
+
+        // 7. Count total matching documents
+        const total = await query.countDocuments();
+
+        // 4. Sort
+        const sortBy = req.query.sort
+            ? req.query.sort.split(',').join(' ')
+            : '-createdAt';
+        query = query.sort(sortBy)
+
+        // 5. Pagination
+        const page = +req.query.page || 1;
+        const limit = +req.query.limit || 10;
+        const skip = (page - 1) * limit;
+        query = query.skip(skip).limit(limit);
+
+        // 6. Execute query
+        const tasks = await query.exec();
+
+        res.status(200).json({
+            success: true,
+            results: tasks.length,
+            total,
+            page,
+            limit,
+            data: tasks.map(t => ({
+                id: t._id,
+                title: t.title,
+                description: t.description,
+                priority: t.priority,
+                status: t.status,
+                createdAt: t.createdAt
+            }))
+        })
+    }
+)
 
 /** @type {Controller} */
 // Get a particular task
@@ -70,8 +111,6 @@ const getTask = catchAsync(async (req, res, next) => {
             createdAt: task.createdAt
         }
     })
-
-
 })
 
 /** @type {Controller} */

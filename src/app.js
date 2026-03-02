@@ -12,6 +12,8 @@ app.get("/", (req,res)=>{
     res.send("Api is running......")
 })
 
+
+
 app.use("/users", userRouter);
 
 app.use("/projects", projectRouter);
