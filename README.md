@@ -1,62 +1,195 @@
 # Task Manager REST API – Clean Architecture
 
-A RESTful API built with Express.js following a clean, scalable, and backend-focused project structure.  
-This project is being developed to demonstrate real-world backend engineering practices.
+A backend-focused RESTful API built with **Node.js, Express.js, and MongoDB**, following **clean architecture principles** and real-world backend engineering practices.
 
-## Features
-- Express Router
-- Controller-based architecture
+This project demonstrates how production-grade APIs are structured, queried, and maintained — with a strong focus on backend logic, scalability, and maintainability.
+
+---
+
+## 🚀 Features
+
+- Clean controller–model separation
 - RESTful API design
-- JSON-based responses
+- Express Router
+- Centralized async error handling
+- Custom `AppError` class
+- Global error handling middleware
+- MongoDB integration using Mongoose
+- Advanced query handling (filtering, searching, sorting, pagination)
+- Environment-based configuration using `dotenv`
 - Proper HTTP status codes
-- Centralized error handling (structure prepared)
-- Custom AppError class (structure prepared)
-- 404 (Route Not Found) middleware (structure prepared)
-- MongoDB database integration using Mongoose
-- Nodemon as a development dependency
-- Environment configuration using dotenv
+- JSON-based consistent API responses
 
-## Implemented APIs
-- POST /users — Create user
-- GET /users — Get all users
-- GET /users/:id — Get a particular user
-- PUT /users/:id — Edit a partcular user
-- DELETE /users/:id — Delete a partcular user
-- POST /projects — Create project
-- GET /projects — Get all projects
-- GET /projects/:id — Get a particular project
-- PUT /projects/:id — Edit a partcular project
-- DELETE /projects/:id — Delete a partcular project
+---
 
+## 🛠️ Tech Stack
 
-## Tech Stack
 - Node.js
 - Express.js
-- MongoDB (Mongoose)
+- MongoDB
+- Mongoose
+- dotenv
+- nodemon
 
-## Project Status
-Backend-focused learning project  
-Actively under development
+---
 
-## Project Structure
-- src/
-    - controllers/                             # Request handling logic
-        - controllers/user.controller.js       # User's request handling logic
-        - controllers/project.controller.js    # Project's request handling logic
-        - controllers/task.controller.js       # Task's request handling logic
-    - models/                                  # Mongoose schemas & models
-        - models/user.model.js                 # User schemas & model
-        - models/project.model.js              # project schemas & model
-        - models/task.model.js                 # task schemas & model
-    - routes/                                  # API route definitions
-        - routes/user.route.js                 # User API route definitions
-        - routes/project.route.js              # Project API route definitions        
-        - routes/task.route.js                 # Task API route definitions        
-    - middlewares/                             # Error handler, auth etc middlewares
-        - middlewares/error.middleware.js      # Global & custom error middleware
-    - config/db.js                             # Database configuration
-    - utils/                                   # Custom Error handling & utilities
-        - utils/AppError.js                    # Custom Error handling
-        - utils/AppError.js                    # Custom Error handling
-    - app.js          # Express application configuration
-- server.js        # Application entry point
+## 📂 Project Structure
+
+src/
+ ├─ controllers/                 # Request handling logic
+ │   ├─ user.controller.js
+ │   ├─ project.controller.js
+ │   └─ task.controller.js
+ │
+ ├─ models/                      # Mongoose schemas & models
+ │   ├─ user.model.js
+ │   ├─ project.model.js
+ │   └─ task.model.js
+ │
+ ├─ routes/                      # API route definitions
+ │   ├─ user.route.js
+ │   ├─ project.route.js
+ │   └─ task.route.js
+ │
+ ├─ middlewares/                 # Custom & global middlewares
+ │   └─ error.middleware.js
+ │
+ ├─ utils/
+ │   └─ AppError.js              # Custom error handling utility
+ │
+ ├─ config/
+ │   └─ db.js                    # MongoDB connection configuration
+ │
+ ├─ app.js                       # Express application setup
+ └─ server.js                    # Application entry point
+
+---
+
+## 📌 Implemented APIs
+
+### Users
+- POST /users — Create user  
+- GET /users — Get all users  
+- GET /users/:id — Get a particular user  
+- PUT /users/:id — Update a user  
+- DELETE /users/:id — Delete a user  
+
+### Projects
+- POST /projects — Create project  
+- GET /projects — Get all projects  
+- GET /projects/:id — Get a particular project  
+- PUT /projects/:id — Update a project  
+- DELETE /projects/:id — Delete a project  
+
+### Tasks
+- POST /tasks — Create task  
+- GET /tasks — Get all tasks (advanced query support)  
+- GET /tasks/:id — Get a particular task  
+- PUT /tasks/:id — Update a task  
+- DELETE /tasks/:id — Delete a task  
+
+---
+
+## 🔎 Advanced Query Features (Tasks API)
+
+The GET /tasks endpoint supports powerful query options using URL parameters.
+
+### Filtering
+Filter tasks by any field:
+- /tasks?priority=high
+- /tasks?status=todo
+
+Advanced comparison operators:
+- /tasks?priority[gte]=medium
+
+Supported operators:
+- gte (greater than or equal)
+- gt
+- lte
+- lt
+
+---
+
+### Searching
+Case-insensitive search on `title` and `description`:
+- /tasks?search=backend
+
+---
+
+### Sorting
+Sort by one or multiple fields:
+- /tasks?sort=priority
+- /tasks?sort=-priority,createdAt
+
+Use `-` for descending order.
+
+---
+
+### Pagination
+Paginate results using:
+- /tasks?page=2&limit=5
+
+Defaults:
+- page = 1
+- limit = 10
+
+---
+
+## 📦 Standard API Response Format
+
+All list endpoints follow a consistent response structure:
+
+{
+  "success": true,
+  "results": 10,
+  "total": 42,
+  "page": 1,
+  "limit": 10,
+  "data": []
+}
+
+### Response Fields
+- results → number of items in current page
+- total → total matching documents (before pagination)
+- page → current page number
+- limit → items per page
+
+---
+
+## 🧠 Backend Concepts Demonstrated
+
+- Clean architecture principles
+- Centralized async error handling
+- Custom error classes
+- Advanced Mongoose query manipulation
+- Regex-based searching
+- Pagination and sorting logic
+- Separation of concerns (routes, controllers, models)
+- API contract consistency
+- Environment-based configuration
+
+---
+
+## ⚙️ Environment Configuration
+
+Create a `.env` file in the root directory:
+
+PORT=5000  
+MONGO_URI=your_mongodb_connection_string  
+NODE_ENV=development  
+
+---
+
+## 📈 Project Status
+
+Backend-focused learning & portfolio project  
+Actively evolving toward production-ready standards
+
+---
+
+## 🎯 Purpose
+
+This project is built to:
+- Strengthen backend engineering fundamentals
+- Demonstrate real-world Express + MongoDB API patterns
+- Serve as a backend portfolio project for job applications

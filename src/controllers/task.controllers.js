@@ -33,45 +33,47 @@ const createTask = catchAsync(
 const getAllTasks = catchAsync(
     /** @type {RequestHandler} */
     async (req, res, next) => {
-
-        // 1. Build query object with filters
+        // 1. Build base filter object
         let queryObj = { ...req.query };
         ['page', 'limit', 'sort', 'search'].forEach(el => delete queryObj[el]);
 
+        // Advanced filtering (gte, gt, lte, lt)
         let queryStr = JSON.stringify(queryObj);
-        queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, match => `$${match}`)
-        queryObj = JSON.parse(queryStr)
+        queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, match => `$${match}`);
+        queryObj = JSON.parse(queryStr);
 
-        // 2. Build Mongoose query
-        let query = Tasks.find(queryObj)
-
-        // 3. Add search
+        // 2. Add search condition
         if (req.query.search) {
-            let query = Tasks.find({
-                $or: [
-                    { title: { $regex: req.query.search, $options: 'i' } },
-                    { description: { $regex: req.query.search, $options: 'i' } }
-                ]
-            })
+            queryObj.$or = [
+                { title: { $regex: req.query.search, $options: 'i' } },
+                { description: { $regex: req.query.search, $options: 'i' } }
+            ];
         }
 
-        // 7. Count total matching documents
-        const total = await query.countDocuments();
+        // 3. Count total matching documents (NO pagination here)
+        const total = await Tasks.countDocuments(queryObj);
 
-        // 4. Sort
+        // 4. Build query
+        let query = Tasks.find(queryObj);
+
+        // 5. Sorting
         const sortBy = req.query.sort
             ? req.query.sort.split(',').join(' ')
             : '-createdAt';
-        query = query.sort(sortBy)
+        query = query.sort(sortBy);
 
-        // 5. Pagination
+        // 6. Pagination
         const page = +req.query.page || 1;
         const limit = +req.query.limit || 10;
         const skip = (page - 1) * limit;
+
         query = query.skip(skip).limit(limit);
 
-        // 6. Execute query
-        const tasks = await query.exec();
+        // 7. Field selection
+        query = query.select('title description priority status createdAt');
+
+        // 8. Execute query
+        const tasks = await query;
 
         res.status(200).json({
             success: true,
@@ -79,15 +81,8 @@ const getAllTasks = catchAsync(
             total,
             page,
             limit,
-            data: tasks.map(t => ({
-                id: t._id,
-                title: t.title,
-                description: t.description,
-                priority: t.priority,
-                status: t.status,
-                createdAt: t.createdAt
-            }))
-        })
+            data: tasks
+        });
     }
 )
 
