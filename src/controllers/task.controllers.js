@@ -37,6 +37,15 @@ const getAllTasks = catchAsync(
         let queryObj = { ...req.query };
         ['page', 'limit', 'sort', 'search'].forEach(el => delete queryObj[el]);
 
+        // Handle multi-value fields
+        const multiValueFields = ['priority', 'status']; // only actual schema fields
+        multiValueFields.forEach(field => {
+            if (queryObj[field]) {
+                const values = queryObj[field].split(','); // convert string to array
+                queryObj[field] = { $in: values };
+            }
+        });
+
         // Advanced filtering (gte, gt, lte, lt)
         let queryStr = JSON.stringify(queryObj);
         queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, match => `$${match}`);
