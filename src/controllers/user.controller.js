@@ -12,8 +12,8 @@ const catchAsync = require("../utils/catchAsync.js")
 // Create User
 const createUser = catchAsync(async (req, res, next) => {
 
-    const { name, email, password } = req.body
-    const user = await Users.create({ name, email, password })
+    const { name, email, password, role } = req.body
+    const user = await Users.create({ name, email, password, role })
 
     res.status(201).json({
         success: true,

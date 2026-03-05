@@ -1,28 +1,31 @@
-const {noRouteFound, globalErrorHandler} = require("./middlewares/error.middleware.js")
+const { noRouteFound, globalErrorHandler } = require("./middlewares/error.middleware.js")
+
 const userRouter = require("./routes/user.route.js")
 const projectRouter = require("./routes/project.route.js")
 const taskRouter = require("./routes/task.route.js")
+const authRouter = require("./routes/auth.route.js")
 
 const express = require("express")
 const app = express()
 
 app.use(express.json())
 
-app.get("/", (req,res)=>{
+app.get("/", (req, res) => {
     res.send("Api is running......")
 })
 
+/* ---------- ROUTES ---------- */
 
+app.use("/api/v1/auth", authRouter)
 
-app.use("/users", userRouter);
+app.use("/api/v1/users", userRouter)
 
-app.use("/projects", projectRouter);
+app.use("/api/v1/projects", projectRouter)
 
-app.use("/tasks", taskRouter);
+app.use("/api/v1/tasks", taskRouter)
 
+/* ---------- ERROR HANDLERS ---------- */
 
-
-// Invalid Route Error Handler
 app.use(noRouteFound)
 
 app.use(globalErrorHandler)
