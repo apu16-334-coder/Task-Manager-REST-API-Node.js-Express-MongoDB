@@ -6,5 +6,7 @@ connectDB()
 
 const PORT = process.env.PORT;
 
-app.listen(PORT, ()=> console.log("server is running on the port: "+ PORT))
-    .on("error", err => console.log('Server error:', err));
+app.listen(
+    PORT, 
+    ()=> console.log(`App running in ${process.env.NODE_ENV} mode on port ${PORT}`)
+).on("error", err => console.log('Server error:', err));
