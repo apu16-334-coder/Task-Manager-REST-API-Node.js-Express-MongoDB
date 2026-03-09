@@ -13,10 +13,10 @@ const protect = catchAsync(
         let token;
         // 1️⃣ Get token from header
         if (
-            req.header.authorization &&
-            req.header.authorization.startsWith('Bearer')
+            req.headers.authorization &&
+            req.headers.authorization.startsWith('Bearer')
         ) {
-            token = req.header.authorization.split(" ")[1];
+            token = req.headers.authorization.split(" ")[1];
         }
 
         // 2️⃣ If no token
@@ -43,7 +43,7 @@ const protect = catchAsync(
 
 const restrictTo = (...roles) => {
     return (req, res, next) => {
-        if(!roles.includes(req.user.rol)) {
+        if(!roles.includes(req.user.role)) {
             return next(new AppError(403, "You do not have permission to perform this action"))
         }
 

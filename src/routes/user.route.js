@@ -1,3 +1,4 @@
+const { protect, restrictTo } = require('../middlewares/auth.middleware.js')
 const express = require("express")
 const router = express.Router()
 
@@ -10,13 +11,13 @@ const {
 } = require("../controllers/user.controller")
 
 router.route('/')
-    .post(createUser)
-    .get(getAllUsers)
+    .post(protect, restrictTo('admin'), createUser)
+    .get(protect, restrictTo('admin'), getAllUsers)
 
 router.route("/:id")
-    .get(getUser)
-    .put(editUser)
-    .delete(deleteUser)
+    .get(protect, restrictTo('admin'), getUser)
+    .put(protect, restrictTo('admin'), editUser)
+    .delete(protect, restrictTo('admin'), deleteUser)
 
 module.exports = router
 

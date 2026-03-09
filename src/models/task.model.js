@@ -28,7 +28,7 @@ const taskSchema = new mongoose.Schema({
 
     dueDate: {
         type: Date,
-        validation: {
+        validate: {
             validator: function (val) {
                 return !val || val >= Date.now()
             },

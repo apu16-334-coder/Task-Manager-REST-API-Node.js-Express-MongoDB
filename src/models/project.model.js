@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 const projectSchema = new mongoose.Schema({
     title: {
         type: String,
-        require: [true, 'Project title is required'],
+        required: [true, 'Project title is required'],
         trim: true,
         minlength: [3, 'Project title too short']
     },
@@ -30,8 +30,17 @@ const projectSchema = new mongoose.Schema({
         type: Date,
         default: Date.now
     }
-})
+});
 
-const Projects = mongoose.model('Project', projectSchema)
+// **Add this here**
+projectSchema.set("toJSON", {
+    transform: function (doc, ret) {
+        ret.id = ret._id;   // rename _id → id
+        delete ret._id;     // remove _id
+        delete ret.__v;     // remove __v
+    }
+});
 
-module.exports = Projects
+const Projects = mongoose.model('Project', projectSchema);
+
+module.exports = Projects;

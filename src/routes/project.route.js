@@ -1,3 +1,4 @@
+const { protect, restrictTo } = require('../middlewares/auth.middleware.js')
 const express = require ("express")
 const router = express.Router()
 
@@ -11,12 +12,12 @@ const {
 
 
 router.route("/")
-    .post(createProject)
+    .post(protect, restrictTo('manager', 'admin'), createProject)
     .get(getAllProjects)
 
 router.route("/:id")
     .get(getProject)
-    .put(editProject)
-    .delete(deleteProject)
+    .put(protect, restrictTo('manager', 'admin'), editProject)
+    .delete(protect, restrictTo('manager', 'admin'), deleteProject)
 
 module.exports = router;

@@ -11,11 +11,11 @@ const jwt = require("jsonwebtoken");
 const signUp = catchAsync(
     /** @type {RequestHandler} */
     async (req, res, next) => {
-        const { name, email, password } = req.body();
+        const { name, email, password } = req.body;
 
-        const hashPassword = bcrypt.hash(password, 12)
+        const hashPassword = await bcrypt.hash(password, 12);
 
-        await Users.create({ name, email, hashPassword })
+        await Users.create({ name, email, password: hashPassword });
 
         res.status(201).json({
             success: true,
