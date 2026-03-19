@@ -1,6 +1,8 @@
 const Tasks = require("../models/task.model.js")
 const AppError = require("../utils/AppError.js")
 const catchAsync = require("../utils/catchAsync.js")
+const Projects = require("../models/project.model.js")
+const Users = require("../models/user.model.js");
 
 /**
  * @typedef {import('express').RequestHandler} RequestHandler
@@ -10,14 +12,41 @@ const catchAsync = require("../utils/catchAsync.js")
 const createTask = catchAsync(
     /** @type {RequestHandler} */
     async (req, res, next) => {
+        const { title, description, project, assignedTo, dueDate } = req.body;
 
-        const { title, description, project } = req.body
-        const task = await Tasks.create({ title, description, project });
+        const projectDoc = await Projects.findById(project);
+
+        if (!projectDoc) {
+            return next(new AppError(404, "Project not found"));
+        }
+
+        if (
+            projectDoc.owner.toString() !== req.user.id &&
+            req.user.role !== 'admin'
+        ) {
+            return next(new AppError(403, "Not allowed to add task to this project"));
+        }
+
+        if (assignedTo) {
+            const user = await Users.findById(assignedTo);
+
+            if (!user) {
+                return next(new AppError(404, "Assigned user not found"));
+            }
+        }
+
+        const task = await Tasks.create({
+            title,
+            description,
+            project,
+            assignedTo,
+            dueDate
+        });
 
         res.status(201).json({
             success: true,
             data: {
-                id: task._id,
+                id: task.id,
                 title: task.title,
                 description: task.description,
                 priority: task.priority,
@@ -95,72 +124,98 @@ const getAllTasks = catchAsync(
     }
 )
 
-/** @type {Controller} */
 // Get a particular task
-const getTask = catchAsync(async (req, res, next) => {
-    const task = await Tasks.findById(req.params.id)
+const getTask = catchAsync(
+    /** @type {RequestHandler} */
+    async (req, res, next) => {
+        const task = await Tasks.findById(req.params.id)
+            .select('title description priority status createdAt');
 
-    if (!task) {
-        return next(new AppError(404, 'Task not found'));
-    }
-
-    res.status(200).json({
-        success: true,
-        data: {
-            id: task._id,
-            title: task.title,
-            description: task.description,
-            priority: task.priority,
-            status: task.status,
-            createdAt: task.createdAt
+        if (!task) {
+            return next(new AppError(404, 'Task not found'));
         }
-    })
-})
 
-/** @type {Controller} */
+        res.status(200).json({
+            success: true,
+            data: task
+        })
+    }
+)
+
 // Edit a particular task
-const editTask = catchAsync(async (req, res, next) => {
+const editTask = catchAsync(
+    /** @type {RequestHandler} */
+    async (req, res, next) => {
+        const {
+            title,
+            description,
+            priority,
+            status,
+            dueDate,
+            project,
+            assignedTo
+        } = req.body
 
-    const { title, description, project } = req.body
-    const task = await Tasks.findByIdAndUpdate(
-        req.params.id,
-        { title, description, project },
-        { returnDocument: 'after', runValidators: true }
-    )
+        const task = await Tasks.findById(req.params.id)
+            .populate("project");
 
-    if (!task) {
-        return next(new AppError(404, 'Task not found'));
-    }
-
-    res.status(200).json({
-        success: true,
-        data: {
-            id: task._id,
-            title: task.title,
-            description: task.description,
-            priority: task.priority,
-            status: task.status,
-            createdAt: task.createdAt
+        if (!task) {
+            return next(new AppError(404, 'Task not found'));
         }
-    })
 
+        const isAdmin = req.user.role === 'admin';
+        const isProjectOwner = task.project.owner.toString() === req.user.id;
+        const isAssignedUser = task.assignedTo?.toString() === req.user.id;
 
-})
+        if (!isAssignedUser && !isProjectOwner && !isAdmin) {
+            return next(new AppError(403, "You are not allowed to edit this task"));
+        }
 
-/** @type {Controller} */
-// Delete a particular task
-const deleteTask = catchAsync(async (req, res, next) => {
-    const task = await Tasks.findByIdAndDelete(req.params.id)
+        const filter = isAssignedUser
+            ? { status }
+            : { title, description, priority, status, dueDate, project, assignedTo }
 
-    if (!task) {
-        return next(new AppError(404, 'Task not found'));
+        const updatedTask = await Tasks.findByIdAndUpdate(
+            req.params.id,
+            filter,
+            { returnDocument: 'after', runValidators: true }
+        ).select('title description priority status createdAt');
+
+        res.status(200).json({
+            success: true,
+            data: updatedTask
+        })
     }
+)
 
-    res.status(200).json({
-        success: true,
-        message: 'succesfully delete'
-    })
+// Delete a particular task
+const deleteTask = catchAsync(
+    /** @type {RequestHandler} */
+    async (req, res, next) => {
+        const task = await Tasks.findById(req.params.id)
+            .populate("project");
 
-})
+        if (!task) {
+            return next(new AppError(404, 'Task not found'));
+        }
+
+        const isProjectOwner =
+            task.project.owner.toString() === req.user.id;
+
+        const isAdmin = req.user.role === 'admin';
+
+        if (!isProjectOwner && !isAdmin) {
+            return next(new AppError(403, "You are not allowed to delete this task"));
+        }
+
+        await Tasks.findByIdAndDelete(req.params.id);
+
+        res.status(200).json({
+            success: true,
+            message: 'successfully deleted'
+        });
+
+    }
+)
 
 module.exports = { createTask, getAllTasks, getTask, editTask, deleteTask }
