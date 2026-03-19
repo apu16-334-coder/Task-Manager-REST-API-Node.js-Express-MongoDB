@@ -37,7 +37,7 @@ projectSchema.set("toJSON", {
     transform: function (doc, ret) {
         ret.id = ret._id;   // rename _id → id
         delete ret._id;     // remove _id
-        delete ret.__v;     // remove __v
+        // delete ret.__v;     // remove __v
     }
 });
 

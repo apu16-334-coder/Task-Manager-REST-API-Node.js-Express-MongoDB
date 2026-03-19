@@ -12,12 +12,12 @@ const {
 
 
 router.route("/")
-    .post(protect, restrictTo('manager', 'admin'), createProject)
-    .get(getAllProjects)
+    .post(protect, restrictTo('manager','admin'), createProject)
+    .get(protect, getAllProjects)
 
 router.route("/:id")
-    .get(getProject)
-    .put(protect, restrictTo('manager', 'admin'), editProject)
-    .delete(protect, restrictTo('manager', 'admin'), deleteProject)
+    .get(protect, getProject)
+    .put(protect, restrictTo('manager','admin'), editProject)
+    .delete(protect, restrictTo('manager','admin'), deleteProject)
 
 module.exports = router;

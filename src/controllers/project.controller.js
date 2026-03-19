@@ -3,112 +3,118 @@ const AppError = require("../utils/AppError.js")
 const catchAsync = require("../utils/catchAsync.js")
 
 /**
- * @typedef {import('express').Request} Request
- * @typedef {import('express').Response} Response
- * @typedef {(req: Request, res: Response)=> void} Controller
+ * @typedef {import('express').RequestHandler} RequestHandler
  */
 
-/** @type {Controller} */
 // Create Project
-const createProject = catchAsync(async (req, res, next) => {
-    const { title, description, owner } = req.body
-    const project = await Projects.create({ title, description, owner })
+const createProject = catchAsync(
+    /** @type {RequestHandler} */
+    async (req, res, next) => {
+        const { title, description } = req.body
 
-    res.status(201).json({
-        success: true,
-        data: {
-            id: project._id,
-            title: project.title,
-            description: project.description,
-            status: project.status,
-            createdAt: project.createdAt
-        }
-    })
-})
+        const owner = req.user.role === 'admin' && req.body.owner
+            ? req.body.owner
+            : req.user.role
 
-/** @type {Controller} */
+        const project = await Projects.create({ title, description, owner })
+
+        res.status(201).json({
+            success: true,
+            data: {
+                id: project.id,
+                title: project.title,
+                description: project.description,
+                status: project.status,
+                createdAt: project.createdAt
+            }
+        })
+    }
+)
+
 // Get All Project
-const getAllProjects = catchAsync(async (req, res, next) => {
-    const projects = await Projects.find()
+const getAllProjects = catchAsync(
+    /** @type {RequestHandler} */
+    async (req, res, next) => {
+        const projects = await Projects.find()
+            .select("title description status createdAt owner");
 
-    res.status(200).json({
-        success: true,
-        data: projects.map(p => ({
-            id: p._id,
-            title: p.title,
-            description: p.description,
-            status: p.status,
-            createdAt: p.createdAt
-        }))
-    })
+        res.status(200).json({
+            success: true,
+            data: projects
+        })
 
-})
+    }
+)
 
-/** @type {Controller} */
 // Get a particular Project
-const getProject = catchAsync(async (req, res, next) => {
-    const project = await Projects.findById(req.params.id)
+const getProject = catchAsync(
+    /** @type {RequestHandler} */
+    async (req, res, next) => {
+        const project = await Projects.findById(req.params.id)
+            .select("title description status createdAt owner");
 
-    if (!project) {
-        return next(new AppError(404, "Project not found"));
-    }
-
-    res.status(200).json({
-        success: true,
-        data: {
-            id: project._id,
-            title: project.title,
-            description: project.description,
-            status: project.status,
-            createdAt: project.createdAt
+        if (!project) {
+            return next(new AppError(404, "Project not found"));
         }
-    })
 
-})
+        res.status(200).json({
+            success: true,
+            data: project
+        })
 
+    }
+)
 
-/** @type {Controller} */
 // Edit a particular Project
-const editProject = catchAsync(async (req, res, next) => {
+const editProject = catchAsync(
+    /** @type {RequestHandler} */
+    async (req, res, next) => {
+        const { title, description, status } = req.body;
 
-    const { title, description, status } = req.body;
-    const project = await Projects.findByIdAndUpdate(
-        req.params.id,
-        { title, description, status },
-        { returnDocument: 'after', runValidators: true }
-    );
+        const filter =
+            req.user.role === "admin"
+                ? { id: req.params.id }
+                : { id: req.params.id, owner: req.user.id };
 
-    if (!project) {
-        return next(new AppError(404, "Project not found"));
-    }
+        const project = await Projects.findByIdAndUpdate(
+            filter,
+            { title, description, status },
+            { returnDocument: 'after', runValidators: true }
+        ).select("title description status createdAt owner");
 
-    res.status(200).json({
-        success: true,
-        data: {
-            id: project._id,
-            title: project.title,
-            description: project.description,
-            status: project.status,
-            createdAt: project.createdAt
+        if (!project) {
+            return next(new AppError(403, "You are not allowed to edit this project"));
         }
-    })
 
-})
+        res.status(200).json({
+            success: true,
+            data: project
+        })
 
-/** @type {Controller} */
-// delete a particular Project
-const deleteProject = catchAsync(async (req, res, next) => {
-    const project = await Projects.findByIdAndDelete(req.params.id);
-
-    if (!project) {
-        return next(new AppError(404, "Project not found"));
     }
+)
 
-    res.status(200).json({
-        success: true,
-        message: "successfully deleted"
-    })
+// delete a particular Project
+const deleteProject = catchAsync(
+    /** @type {RequestHandler} */
+    async (req, res, next) => {
+        const filter =
+            req.user.role === "admin"
+                ? { id: req.params.id }
+                : { id: req.params.id, owner: req.user.id };
 
-})
+        const project = await Projects.findOneAndDelete(filter);
+
+        if (!project) {
+            return next(new AppError(403, "You are not allowed to delete this project"));
+        }
+
+        res.status(200).json({
+            success: true,
+            message: "successfully deleted"
+        })
+
+    }
+)
 
 module.exports = { createProject, getAllProjects, getProject, editProject, deleteProject }

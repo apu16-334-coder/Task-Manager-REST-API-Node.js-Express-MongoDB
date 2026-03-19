@@ -9,7 +9,6 @@ const bcrypt = require("bcrypt")
 
 // Create User
 const createUser = catchAsync(
-
     /** @type {RequestHandler} */
     async (req, res, next) => {
         const { name, email, password, role, isActive } = req.body;
@@ -41,10 +40,10 @@ const createUser = catchAsync(
 
 // Get All Users
 const getAllUsers = catchAsync(
-
     /** @type {RequestHandler} */
     async (req, res, next) => {
-        const users = await Users.find().select('name email role isActive createdAt')
+        const users = await Users.find()
+            .select('name email role isActive createdAt');
 
         res.status(200).json({
             success: true,
@@ -56,10 +55,10 @@ const getAllUsers = catchAsync(
 
 // Get a particular User
 const getUser = catchAsync(
-
     /** @type {RequestHandler} */
     async (req, res, next) => {
-        const user = await Users.findById(req.params.id).select('name email role isActive createdAt')
+        const user = await Users.findById(req.params.id)
+            .select('name email role isActive createdAt');
 
         if (!user) {
             return next(new AppError(404, "User not found"));
@@ -75,7 +74,6 @@ const getUser = catchAsync(
 
 // edit a particular User
 const editUser = catchAsync(
-
     /** @type {RequestHandler} */
     async (req, res, next) => {
         const { name, email, role, isActive } = req.body;
@@ -84,7 +82,7 @@ const editUser = catchAsync(
             req.params.id,
             { name, email, role, isActive },
             { returnDocument: 'after', runValidators: true }
-        ).select('name email role isActive createdAt')
+        ).select('name email role isActive createdAt');
 
         if (!user) {
             return next(new AppError(404, "User not found"));
