@@ -13,19 +13,9 @@ const signUp = catchAsync(
     async (req, res, next) => {
         const { name, email, password } = req.body;
 
-        if (!name || !email || !password) {
-            return next(new AppError(400, "Missing required fields"))
-        }
-
-        if (password.length < 5) {
-            return next(new AppError(400, "Password must be at least 5 characters"));
-        }
-
-        const emailNormalized = email.toLowerCase().trim();
-
         const hashPassword = await bcrypt.hash(password, 12);
 
-        await Users.create({ name, emailNormalized, password: hashPassword });
+        await Users.create({ name, email, password: hashPassword });
 
         res.status(201).json({
             success: true,
@@ -39,10 +29,6 @@ const logIn = catchAsync(
     async (req, res, next) => {
         // get requested email and password
         const { email, password } = req.body;
-
-        if (!email || !password) {
-            return next(new AppError(400, "Missing required fields"))
-        }
 
         // find user + include password
         const user = await Users.findOne({ email }).select('+password');
@@ -59,10 +45,10 @@ const logIn = catchAsync(
 
         // create JWT
         const token = jwt.sign(
-                { id: user.id },
-                process.env.JWT_SECRET,
-                { expiresIn: process.env.JWT_EXPIRES_IN }
-            )
+            { id: user.id },
+            process.env.JWT_SECRET,
+            { expiresIn: process.env.JWT_EXPIRES_IN }
+        )
 
         res.status(200).json({
             success: true,
