@@ -21,11 +21,16 @@ const protect = catchAsync(
 
         // 2️⃣ If no token
         if (!token) {
-            return next(new AppError(401, "You are not logged in"))
+            return next(new AppError(401, "You are not logged in. Please log in"))
         }
 
         // 3️⃣ Verify token
-        const decoded = jwt.verify(token, process.env.JWT_SECRET)
+        let decoded;
+        try {
+            decoded = jwt.verify(token, process.env.JWT_SECRET)
+        } catch (err) {
+            return next(new AppError(401, "Invalid or expired token"))
+        }
 
         // 4️⃣ Check if user still exists
         const currentUser = await Users.findById(decoded.id)
@@ -43,7 +48,7 @@ const protect = catchAsync(
 
 const restrictTo = (...roles) => {
     return (req, res, next) => {
-        if(!roles.includes(req.user.role)) {
+        if (!roles.includes(req.user.role)) {
             return next(new AppError(403, "You do not have permission to perform this action"))
         }
 

@@ -6,13 +6,26 @@ const taskRouter = require("./routes/task.route.js")
 const authRouter = require("./routes/auth.route.js")
 
 const express = require("express")
+const helmet = require("helmet")
+const cors = require("cors")
+
+
 const app = express()
 
-app.use(express.json())
+// Security middlewares
+app.use(helmet())
+app.use(cors())
 
+// Body parser with limit
+app.use(express.json({ limit: "10kb" }))
+
+// Health route
 app.get("/", (req, res) => {
-    res.send("Api is running......")
-}) 
+  res.status(200).json({
+    status: "success",
+    message: "API running"
+  })
+})
 
 /* ---------- ROUTES ---------- */
 

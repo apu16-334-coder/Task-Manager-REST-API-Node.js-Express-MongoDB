@@ -13,11 +13,21 @@ const createUser = catchAsync(
     async (req, res, next) => {
         const { name, email, password, role, isActive } = req.body;
 
+        if (!name || !email || !password) {
+            return next(new AppError(400, "Missing required fields"))
+        }
+
+        if (password.length < 5) {
+            return next(new AppError(400, "Password must be at least 5 characters"));
+        }
+
+        const emailNormalized = email.toLowerCase().trim();
+
         const hashPassword = await bcrypt.hash(password, 12);
 
         const user = await Users.create({
             name,
-            email,
+            emailNormalized,
             password: hashPassword,
             role,
             isActive
