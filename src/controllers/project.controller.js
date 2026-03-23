@@ -12,9 +12,10 @@ const createProject = catchAsync(
     async (req, res, next) => {
         const { title, description } = req.body
 
-        const owner = req.user.role === 'admin' && req.body.owner
-            ? req.body.owner
-            : req.user.role
+        const owner =
+            req.user.role === 'admin' && req.body.owner
+                ? req.body.owner
+                : req.user.id;
 
         const project = await Projects.create({ title, description, owner })
 
@@ -73,10 +74,10 @@ const editProject = catchAsync(
 
         const filter =
             req.user.role === "admin"
-                ? { id: req.params.id }
-                : { id: req.params.id, owner: req.user.id };
+                ? { _id: req.params.id }
+                : { _id: req.params.id, owner: req.user.id };
 
-        const project = await Projects.findByIdAndUpdate(
+        const project = await Projects.findOneAndUpdate(
             filter,
             { title, description, status },
             { returnDocument: 'after', runValidators: true }
@@ -100,8 +101,8 @@ const deleteProject = catchAsync(
     async (req, res, next) => {
         const filter =
             req.user.role === "admin"
-                ? { id: req.params.id }
-                : { id: req.params.id, owner: req.user.id };
+                ? { _id: req.params.id }
+                : { _id: req.params.id, owner: req.user.id };
 
         const project = await Projects.findOneAndDelete(filter);
 

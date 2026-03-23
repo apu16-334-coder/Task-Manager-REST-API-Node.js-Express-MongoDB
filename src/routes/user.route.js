@@ -20,4 +20,3 @@ router.route("/:id")
     .delete(protect, restrictTo('admin'), deleteUser)
 
 module.exports = router
-
