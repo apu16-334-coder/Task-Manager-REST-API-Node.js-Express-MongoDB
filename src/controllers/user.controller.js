@@ -13,12 +13,10 @@ const createUser = catchAsync(
     async (req, res, next) => {
         const { name, email, password, role, isActive } = req.body;
 
-        const hashPassword = await bcrypt.hash(password, 12);
-
         const user = await Users.create({
             name,
             email,
-            password: hashPassword,
+            password,
             role,
             isActive
         })
@@ -99,24 +97,22 @@ const editUser = catchAsync(
 const resetUserPassword = catchAsync(
     /** @type {RequestHandler} */
     async (req, res, next) => {
-        const { password } = req.body
+        const { password } = req.body;
 
-        const hashPassword = await bcrypt.hash(password, 12);
+        // find user + include password
+        const user = await Users.findById(req.params.id).select('+password');
 
-        const user = await Users.findByIdAndUpdate(
-            req.params.id,
-            { password: hashPassword },
-            { returnDocument: 'after', runValidators: true }
-        )
-
-        if(!user) {
-            return next(new AppError(404, "User not found"))
+        if (!user) {
+            return next(new AppError(404, "User not found"));
         }
+
+        user.password = password; // plain password
+        await user.save(); // triggers pre("save") → hashing + passwordChangedAt
 
         res.status(200).json({
             success: true,
             message: "Password reset successful"
-        })
+        });
     }
 )
 

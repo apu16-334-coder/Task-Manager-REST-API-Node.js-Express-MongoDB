@@ -24,7 +24,7 @@ const userSchema = new mongoose.Schema({
     password: {
         type: String,
         required: [true, "Password is required"],
-        minlength: [5, 'Password must be in 5 characters'],
+        minlength: [8, 'Password must be in 8 characters'],
         select: false
     },
 
@@ -42,8 +42,23 @@ const userSchema = new mongoose.Schema({
     createdAt: {
         type: Date,
         default: Date.now
-    }
+    },
+
+    passwordChangedAt: Date
 })
+
+userSchema.pre("save", async function (next) {
+    if (!this.isModified("password")) return next();
+
+    this.password = await bcrypt.hash(this.password, 12);
+
+    // Set passwordChangedAt (exclude new user creation edge case)
+    if (!this.isNew) {
+        this.passwordChangedAt = Date.now() - 1000;
+    }
+
+    next();
+});
 
 const transform = (doc, ret) => {
     ret.id = ret._id.toString();

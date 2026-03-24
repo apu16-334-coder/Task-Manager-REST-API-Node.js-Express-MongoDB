@@ -13,9 +13,7 @@ const signUp = catchAsync(
     async (req, res, next) => {
         const { name, email, password } = req.body;
 
-        const hashPassword = await bcrypt.hash(password, 12);
-
-        await Users.create({ name, email, password: hashPassword });
+        await Users.create({ name, email, password });
 
         res.status(201).json({
             success: true,
@@ -62,4 +60,29 @@ const logIn = catchAsync(
     }
 )
 
-module.exports = { signUp, logIn }
+const changePassword = catchAsync(
+    /** @type {RequestHandler} */
+    async (req, res, next) => {
+        const { currentPassword, newPassword } = req.body;
+
+        const user = await Users.findById(req.user.id);
+
+        if (!user) {
+            return next(new AppError(404, 'User not found'))
+        }
+
+        if (! await bcrypt.compare(currentPassword, user.password)) {
+            return next(new AppError(401, 'Current password is incorrect'))
+        }
+
+        user.password = newPassword; // set new plain password
+        await user.save(); // triggers pre("save") → hashing + passwordChangedAt
+
+        res.status(200).json({
+            success: true,
+            message: "Password changed successfully"
+        });
+    }
+)
+
+module.exports = { signUp, logIn, changePassword }
