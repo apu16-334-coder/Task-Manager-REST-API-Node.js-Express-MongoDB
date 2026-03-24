@@ -171,13 +171,13 @@ const editTask = catchAsync(
             return next(new AppError(403, "You are not allowed to edit this task"));
         }
 
-        const filter = isAssignedUser
+        const filteredFields = isAssignedUser
             ? { status }
             : { title, description, priority, status, dueDate, project, assignedTo }
 
         const updatedTask = await Tasks.findByIdAndUpdate(
             req.params.id,
-            filter,
+            filteredFields,
             { returnDocument: 'after', runValidators: true }
         ).select('title description priority status createdAt');
 

@@ -6,7 +6,8 @@ const {
     createUser, 
     getAllUsers, 
     getUser, 
-    editUser, 
+    editUser,
+    resetUserPassword, 
     deleteUser 
 } = require("../controllers/user.controller")
 
@@ -18,5 +19,8 @@ router.route("/:id")
     .get(protect, restrictTo('admin'), getUser)
     .put(protect, restrictTo('admin'), editUser)
     .delete(protect, restrictTo('admin'), deleteUser)
+
+router.route("/:id/password")
+    .patch(protect, restrictTo('admin'), resetUserPassword)
 
 module.exports = router

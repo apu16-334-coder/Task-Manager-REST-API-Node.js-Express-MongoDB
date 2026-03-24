@@ -96,6 +96,30 @@ const editUser = catchAsync(
     }
 )
 
+const resetUserPassword = catchAsync(
+    /** @type {RequestHandler} */
+    async (req, res, next) => {
+        const { password } = req.body
+
+        const hashPassword = await bcrypt.hash(password, 12);
+
+        const user = await Users.findByIdAndUpdate(
+            req.params.id,
+            { password: hashPassword },
+            { returnDocument: 'after', runValidators: true }
+        )
+
+        if(!user) {
+            return next(new AppError(404, "User not found"))
+        }
+
+        res.status(200).json({
+            success: true,
+            message: "Password reset successful"
+        })
+    }
+)
+
 // delete a particular User
 const deleteUser = catchAsync(
 
@@ -115,4 +139,4 @@ const deleteUser = catchAsync(
     }
 )
 
-module.exports = { createUser, getAllUsers, getUser, editUser, deleteUser }
+module.exports = { createUser, getAllUsers, getUser, editUser, resetUserPassword, deleteUser }
