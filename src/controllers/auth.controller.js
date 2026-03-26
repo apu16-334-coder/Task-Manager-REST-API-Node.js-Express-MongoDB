@@ -65,6 +65,14 @@ const changePassword = catchAsync(
     async (req, res, next) => {
         const { currentPassword, newPassword } = req.body;
 
+        if(!currentPassword) {
+            return next(new AppError(400, 'Current password is required'))
+        }
+
+        if(!newPassword) {
+            return next(new AppError(400, 'New password is required'))
+        }
+
         const user = await Users.findById(req.user.id);
 
         if (!user) {
