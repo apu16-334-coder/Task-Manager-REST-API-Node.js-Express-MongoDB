@@ -20,7 +20,7 @@ router.route("/:id")
     .put(protect, restrictTo('admin'), editUser)
     .delete(protect, restrictTo('admin'), deleteUser)
 
-router.route("/:id/password")
+router.route("/:id/reset-password")
     .patch(protect, restrictTo('admin'), resetUserPassword)
 
 module.exports = router

@@ -70,6 +70,7 @@ const getUser = catchAsync(
     }
 )
 
+
 // edit a particular User
 const editUser = catchAsync(
     /** @type {RequestHandler} */
@@ -100,7 +101,7 @@ const resetUserPassword = catchAsync(
         const { password } = req.body;
 
         // find user + include password
-        const user = await Users.findById(req.params.id).select('+password');
+        const user = await Users.findById(req.params.id)
 
         if (!user) {
             return next(new AppError(404, "User not found"));

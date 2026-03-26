@@ -55,7 +55,6 @@ const protect = catchAsync(
 
         // 6️⃣ Attach user to request
         req.user = currentUser
-
         next()
     }
 )
