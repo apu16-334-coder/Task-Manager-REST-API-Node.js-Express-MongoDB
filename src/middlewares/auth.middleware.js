@@ -39,7 +39,21 @@ const protect = catchAsync(
             return next(new AppError(401, "User no longer exists"))
         }
 
-        // 5️⃣ Attach user to request
+        // 5️⃣ Check password change (CRITICAL)
+        if (currentUser.passwordChangedAt) {
+            const changedTimestamp = parseInt(
+                currentUser.passwordChangedAt.getTime() / 1000,
+                10
+            );
+
+            if (decoded.iat < changedTimestamp) {
+                return next(
+                    new AppError(401, "Password recently changed. Please log in again")
+                );
+            }
+        }
+
+        // 6️⃣ Attach user to request
         req.user = currentUser
 
         next()
@@ -48,12 +62,14 @@ const protect = catchAsync(
 
 const restrictTo = (...roles) => {
     return (req, res, next) => {
-        if (!roles.includes(req.user.role)) {
-            return next(new AppError(403, "You do not have permission to perform this action"))
+        if (!req.user || !roles.includes(req.user.role)) {
+            return next(
+                new AppError(403, "You do not have permission to perform this action")
+            );
         }
 
-        next()
-    }
-}
+        next();
+    };
+};
 
 module.exports = { protect, restrictTo }
