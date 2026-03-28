@@ -1,4 +1,5 @@
 const mongoose = require("mongoose")
+const bcrypt = require("bcrypt")
 
 const userSchema = new mongoose.Schema({
     name: {
@@ -47,17 +48,14 @@ const userSchema = new mongoose.Schema({
     passwordChangedAt: Date
 })
 
-userSchema.pre("save", async function (next) {
-    if (!this.isModified("password")) return next();
+userSchema.pre("save", async function () {
+    if (!this.isModified("password")) return;
 
     this.password = await bcrypt.hash(this.password, 12);
 
-    // Set passwordChangedAt (exclude new user creation edge case)
     if (!this.isNew) {
         this.passwordChangedAt = Date.now() - 1000;
     }
-
-    next();
 });
 
 const transform = (doc, ret) => {

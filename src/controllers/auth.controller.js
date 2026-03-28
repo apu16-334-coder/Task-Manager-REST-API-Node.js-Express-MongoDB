@@ -53,6 +53,7 @@ const logIn = catchAsync(
             token,
             data: {
                 id: user.id,
+                name: user.name,
                 email: user.email,
                 role: user.role
             }
@@ -73,7 +74,7 @@ const changePassword = catchAsync(
             return next(new AppError(400, 'New password is required'))
         }
 
-        const user = await Users.findById(req.user.id);
+        const user = await Users.findById(req.user.id).select('+password')
 
         if (!user) {
             return next(new AppError(404, 'User not found'))

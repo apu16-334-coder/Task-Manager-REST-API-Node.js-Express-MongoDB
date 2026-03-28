@@ -12,6 +12,9 @@ const cors = require("cors")
 
 const app = express()
 
+// ✔ Query parser extended
+app.set('query parser', 'extended');
+
 // Security middlewares
 app.use(helmet())
 app.use(cors())

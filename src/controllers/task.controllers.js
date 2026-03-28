@@ -64,7 +64,13 @@ const getAllTasks = catchAsync(
     async (req, res, next) => {
         // 1. Build base filter object
         let queryObj = { ...req.query };
-        ['page', 'limit', 'sort', 'search'].forEach(el => delete queryObj[el]);
+        
+        ['page', 'limit', 'sort', 'search'].forEach(el => {
+            if(queryObj[el]) {
+                delete queryObj[el]
+            }
+        });
+        
 
         // Handle multi-value fields
         const multiValueFields = ['priority', 'status']; // only actual schema fields
