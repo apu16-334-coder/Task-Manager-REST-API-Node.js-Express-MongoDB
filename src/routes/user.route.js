@@ -17,14 +17,16 @@ router.route('/')
     .post(protect, restrictTo('admin'), createUser)
     .get(protect, restrictTo('admin'), getAllUsers)
 
+router.route("/me")
+    .get(protect, getMe)
+    .patch(protect, editMe)
+
 router.route("/:id")
     .get(protect, restrictTo('admin'), getUser)
     .put(protect, restrictTo('admin'), editUser)
     .delete(protect, restrictTo('admin'), deleteUser)
 
-router.route("/me")
-    .get(protect, getMe)
-    .patch(protect, editMe)
+
 
 router.route("/:id/reset-password")
     .patch(protect, restrictTo('admin'), resetUserPassword)

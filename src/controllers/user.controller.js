@@ -15,8 +15,7 @@ const createUser = catchAsync(
             name,
             email,
             password,
-            role,
-            isActive
+            role
         } = req.body;
 
         const user = await Users.create({
@@ -46,7 +45,7 @@ const createUser = catchAsync(
 const getAllUsers = catchAsync(
     /** @type {RequestHandler} */
     async (req, res, next) => {
-        // // build base filter obj 
+        // build base filter obj
         let queryObj = { ...req.query };
 
         ['page', 'limit', 'sort', 'search'].forEach(el => delete queryObj[el]);
@@ -102,7 +101,6 @@ const getAllUsers = catchAsync(
             limit,
             data: users
         })
-
     }
 )
 
