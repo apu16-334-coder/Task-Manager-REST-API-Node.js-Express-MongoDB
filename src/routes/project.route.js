@@ -13,7 +13,7 @@ const {
 
 router.route("/")
     .post(protect, restrictTo('manager','admin'), createProject)
-    .get(protect, getAllProjects)
+    .get(protect, restrictTo('admin'), getAllProjects)
 
 router.route("/:id")
     .get(protect, getProject)

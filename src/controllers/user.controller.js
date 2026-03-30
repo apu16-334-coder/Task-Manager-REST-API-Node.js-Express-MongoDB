@@ -90,6 +90,7 @@ const getAllUsers = catchAsync(
         // Field selection
         query = query.select('name email role isActive createdAt');
 
+        // Execute query
         const users = await query;
 
         res.status(200).json({

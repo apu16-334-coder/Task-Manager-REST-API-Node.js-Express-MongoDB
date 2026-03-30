@@ -12,7 +12,7 @@ const createProject = catchAsync(
     async (req, res, next) => {
         const { title, description } = req.body;
 
-        if(req.user.role === 'admin' && !req.body.owner) {
+        if (req.user.role === 'admin' && !req.body.owner) {
             return next(new AppError(400, 'Owner is required'))
         }
 
@@ -40,14 +40,62 @@ const createProject = catchAsync(
 const getAllProjects = catchAsync(
     /** @type {RequestHandler} */
     async (req, res, next) => {
-        const projects = await Projects.find()
-            .select("title description status createdAt owner");
+        // build base filter object
+        let queryObj = { ...req.query };
+        ['page', 'limit', 'sort', 'search'].forEach(el => delete queryObj[el]);
+
+        // Handle multiple value fields
+        if (queryObj['status']) {
+            const values = queryObj['status'].split(",");
+            queryObj['status'] = { $in: values }
+        }
+
+        // Advance filtering (gte|te|lte|te)
+        let queryStr = JSON.stringify(queryObj);
+        queryStr = queryStr.replace(/\b(gte|gte|lte|lt)\b/g, match => `$${match}`);
+        queryObj = JSON.parse(queryStr);
+
+        // Add search condition
+        if (req.query.search) {
+            queryObj.$or = [
+                { title: { $regex: req.query.search, $options: 'i' } },
+                { description: { $regex: req.query.search, $options: 'i' } }
+            ]
+        }
+
+        // Count total matching documents (No pagination here)
+        const total = await Projects.countDocuments(queryObj);
+
+        // Build query 
+        let query = Projects.find(queryObj);
+
+        // sorting
+        const sortBy = req.query.sort
+            ? req.query.sort.split(",").join(" ")
+            : '-createdAt'
+        query = query.sort(sortBy);
+
+        // Pagination
+        const page = +req.query.page || 1;
+        const limit = +req.query.limit || 10;
+        const skip = (page - 1) * limit;
+
+        query = query.skip(skip).limit(limit);
+
+        // select field
+        query = query.select("title description status createdAt owner");
+
+        // execute query
+        const projects = await query;
 
         res.status(200).json({
             success: true,
+            results: projects.length,
+            total,
+            page,
+            limit,
             data: projects
         })
-
     }
 )
 
