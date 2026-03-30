@@ -10,10 +10,14 @@ const catchAsync = require("../utils/catchAsync.js")
 const createProject = catchAsync(
     /** @type {RequestHandler} */
     async (req, res, next) => {
-        const { title, description } = req.body
+        const { title, description } = req.body;
+
+        if(req.user.role === 'admin' && !req.body.owner) {
+            return next(new AppError(400, 'Owner is required'))
+        }
 
         const owner =
-            req.user.role === 'admin' && req.body.owner
+            req.user.role === 'admin'
                 ? req.body.owner
                 : req.user.id;
 

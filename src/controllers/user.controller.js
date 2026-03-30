@@ -22,8 +22,7 @@ const createUser = catchAsync(
             name,
             email,
             password,
-            role,
-            isActive
+            role
         })
 
         res.status(201).json({
