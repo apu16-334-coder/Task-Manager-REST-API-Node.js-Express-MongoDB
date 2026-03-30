@@ -56,10 +56,10 @@ This project demonstrates real-world backend engineering practices including aut
 ---
 
 ### Projects API
-- Any authenticated user can view projects
+- Only Admin can view projects
 - Manager/Admin can create projects
 - Manager becomes owner automatically
-- Admin can assign or override project ownership
+- Admin assign project ownership
 - Only **project owner or admin** can update/delete projects
 
 ---
@@ -114,7 +114,16 @@ Example of supported query parameters:
 
 ### Projects
 - **POST /projects** — Create project (Manager/Admin)
-- **GET /projects** — Get all projects (Authenticated users)
+- **GET /projects** — Get all projects (Admin)
+
+Supports query parameters:
+- `search` → keyword search in title, description
+- `status` → single or multiple values (e.g., `status=completed` or `status=active,planned`)
+- `createdAt` → date filtering using `gte`, `gt`, `lte`, `lt` (e.g., `createdAt[gte]=2026-01-01`)
+- `sort` → comma-separated fields (e.g., `sort=-createdAt`)
+- `page` → page number for pagination (e.g., `page=1`)
+- `limit` → results per page (e.g., `limit=10`)
+
 - **GET /projects/:id** — Get a particular project (Authenticated users)
 - **PUT /projects/:id** — Edit project (Owner/Admin)
 - **DELETE /projects/:id** — Delete project (Owner/Admin)
@@ -126,7 +135,7 @@ Example of supported query parameters:
 Supports query parameters:
 - `search` → keyword search in title, description
 - `priority` → single or multiple values (e.g., `priority=high` or `priority=high,medium`)
-- `status` → single or multiple values (e.g., `status=open` or `status=open,completed`)
+- `status` → single or multiple values (e.g., `status=todo` or `status=todo,done`)
 - `createdAt` → date filtering using `gte`, `gt`, `lte`, `lt` (e.g., `createdAt[gte]=2026-01-01`)
 - `sort` → comma-separated fields (e.g., `sort=-createdAt`)
 - `page` → page number for pagination (e.g., `page=1`)
