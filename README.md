@@ -56,10 +56,15 @@ This project demonstrates real-world backend engineering practices including aut
 ---
 
 ### Projects API
-- Only Admin can view projects
+- Only Admin can view all projects 
+- Supports filtering by any existing fields with rational multi-values and aslo with `gte|gt|lte|lt`
+- Supports search keywords in `title`/`description`
+- Supports sorting (`sort`) and pagination (`page` & `limit`)
+- Manager can view their own projects.
+- Particular project can view with id.
 - Manager/Admin can create projects
 - Manager becomes owner automatically
-- Admin assign project ownership
+- Admin must assign project ownership
 - Only **project owner or admin** can update/delete projects
 - Only **admin** can change ownership in update endpoint.
 
@@ -110,7 +115,7 @@ Example of supported query parameters:
 
 ### Projects `/api/v1/projects`
 - **POST /** — Create project (Manager/Admin)
-- **GET /** — Get all projects (Admin)
+- **GET /** — Get all projects (Only Admin)
 
 Supports query parameters:
 - `search` → keyword search in title, description
@@ -120,11 +125,21 @@ Supports query parameters:
 - `page` → page number for pagination (e.g., `page=1`)
 - `limit` → results per page (e.g., `limit=10`)
 
+- **GET /my** — Get their own projects (Only manager)
+
+Supports query parameters:
+- `search` → keyword search in title, description
+- `status` → single or multiple values (e.g., `status=completed` or `status=active,planned`)
+- `createdAt` → date filtering using `gte`, `gt`, `lte`, `lt` (e.g., `createdAt[gte]=2026-01-01`)
+- `sort` → comma-separated fields (e.g., `sort=-createdAt`)
+- `page` → page number for pagination (e.g., `page=1`)
+- `limit` → results per page (e.g., `limit=5`)
+
 - **GET /:id** — Get a particular project (Authenticated users)
 - **PATCH /:id** — Update project (Owner/Admin)
 - **DELETE /:id** — Delete project (Owner/Admin)
 
-#### Response Metadata for GET all Users requests
+#### Response Metadata for GET all Projects and GET my Projects requests
 - `results` → number of items returned
 - `total` → total items matching filters
 - `page` → current page
@@ -174,10 +189,10 @@ Actively under development
 
 ✔ Authentication implemented  
 ✔ Role-based authorization implemented  
+✔ User-level ownership + field-level authorization
+✔ Filtering, sorting, searching, pagination implemented in User CRUD api endpoint  
 ✔ Project-level ownership authorization implemented  
-✔ Filtering, sorting, searching, pagination implemented  
-✔ User-level ownership + field-level authorization in progress
-⏳ Project-level ownership + field-level authorization in progress  
+✔ Filtering, sorting, searching, pagination implemented in Project CRUD api endpoint  
 ⏳ Task-level ownership + field-level authorization in progress  
 ⏳ Project-member based task assignment system (planned)
 
