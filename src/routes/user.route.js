@@ -7,8 +7,8 @@ const {
     getAllUsers, 
     getUser, 
     getMe, 
-    editMe, 
-    editUser, 
+    updateMe, 
+    updateUser, 
     resetUserPassword, 
     deleteUser 
 } = require("../controllers/user.controller")
@@ -19,11 +19,11 @@ router.route('/')
 
 router.route("/me")
     .get(protect, getMe)
-    .patch(protect, editMe)
+    .patch(protect, updateMe)
 
 router.route("/:id")
     .get(protect, restrictTo('admin'), getUser)
-    .put(protect, restrictTo('admin'), editUser)
+    .patch(protect, restrictTo('admin'), updateUser)
     .delete(protect, restrictTo('admin'), deleteUser)
 
 

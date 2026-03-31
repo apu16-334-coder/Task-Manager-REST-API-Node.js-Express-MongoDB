@@ -6,7 +6,7 @@ const {
     createProject, 
     getAllProjects, 
     getProject, 
-    editProject, 
+    updateProject, 
     deleteProject 
 } = require("../controllers/project.controller.js")
 
@@ -17,7 +17,7 @@ router.route("/")
 
 router.route("/:id")
     .get(protect, getProject)
-    .put(protect, restrictTo('manager','admin'), editProject)
+    .patch(protect, restrictTo('manager','admin'), updateProject)
     .delete(protect, restrictTo('manager','admin'), deleteProject)
 
 module.exports = router;

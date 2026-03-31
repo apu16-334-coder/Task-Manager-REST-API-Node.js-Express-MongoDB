@@ -149,7 +149,7 @@ const getTask = catchAsync(
 )
 
 // Edit a particular task
-const editTask = catchAsync(
+const updateTask = catchAsync(
     /** @type {RequestHandler} */
     async (req, res, next) => {
         const {
@@ -224,4 +224,4 @@ const deleteTask = catchAsync(
     }
 )
 
-module.exports = { createTask, getAllTasks, getTask, editTask, deleteTask }
+module.exports = { createTask, getAllTasks, getTask, updateTask, deleteTask }

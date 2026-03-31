@@ -6,7 +6,7 @@ const {
     createTask, 
     getAllTasks, 
     getTask, 
-    editTask, 
+    updateTask, 
     deleteTask
 } = require("../controllers/task.controllers.js")
 
@@ -17,7 +17,7 @@ router.route("/")
 
 router.route("/:id")
     .get(protect, getTask)
-    .put(protect, editTask)
+    .patch(protect, updateTask)
     .delete(protect, restrictTo('manager','admin'), deleteTask)
 
 module.exports = router;

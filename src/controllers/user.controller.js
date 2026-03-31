@@ -139,7 +139,7 @@ const getMe = catchAsync(
 )
 
 // edit own profile
-const editMe = catchAsync(
+const updateMe = catchAsync(
     /** @type {RequestHandler} */
     async (req, res, next) => {
         const { name, email } = req.body;
@@ -163,7 +163,7 @@ const editMe = catchAsync(
 )
 
 // edit a particular User
-const editUser = catchAsync(
+const updateUser = catchAsync(
     /** @type {RequestHandler} */
     async (req, res, next) => {
         const { name, email, role, isActive } = req.body;
@@ -227,4 +227,4 @@ const deleteUser = catchAsync(
     }
 )
 
-module.exports = { createUser, getAllUsers, getUser, getMe, editMe, editUser, resetUserPassword, deleteUser }
+module.exports = { createUser, getAllUsers, getUser, getMe, updateMe, updateUser, resetUserPassword, deleteUser }

@@ -46,7 +46,7 @@ This project demonstrates real-world backend engineering practices including aut
 
 ---
 
-### Users API
+### Users API 
 - Only Admin can access user based CRUD api endpoint
 - Any authenticated user can access `/me` api endpoint to get own profile and edit name and email only, but admin
 - Supports filtering by any existing fields with rational multi-values and aslo with `gte|gt|lte|lt`
@@ -61,6 +61,7 @@ This project demonstrates real-world backend engineering practices including aut
 - Manager becomes owner automatically
 - Admin assign project ownership
 - Only **project owner or admin** can update/delete projects
+- Only **admin** can change ownership in update endpoint.
 
 ---
 
@@ -75,19 +76,14 @@ This project demonstrates real-world backend engineering practices including aut
 
 ## Implemented APIs
 
-### Users
-- **POST /users** — Create user (Admin only)
-- **GET /users** — Get all users (Admin only, supports filtering, sorting, pagination, searching)
-- **GET /me** — Get profile of any athenticated user or login user
-- **PATCH /me** — Edit profile of any athenticated user or login user
-- **GET /users/:id** — Get a particular user (Admin only)
-- **PUT /users/:id** — Edit a particular user (Admin only)
-- **PATCH /users/:id/reset-password** — Reset password of a particular user (Admin only)
-- **DELETE /users/:id** — Delete a particular user (Admin only)
+### Auth `/api/v1/auth`
+- **POST /signup** - Create profile (User only)
+- **POST /login** - Log In to account
+- **POST /change-password** - Change account password (Any authenticated user)
 
-### Users
-- **POST /users** — Create user (Admin only)
-- **GET /users** — Get all users (Admin only, supports filtering, sorting, pagination, searching)
+### Users `/api/v1/users`
+- **POST /** — Create user (Admin only)
+- **GET /** — Get all users (Admin only, supports filtering, sorting, pagination, searching)
 
 Example of supported query parameters:
 - `search` → name, or email
@@ -98,12 +94,12 @@ Example of supported query parameters:
 - `page` → page number for pagination (e.g., `page=1`)
 - `limit` → results per page (e.g., `limit=10`)
 
-- **GET /me** — Get profile of any athenticated user or login user
-- **PATCH /me** — Edit profile of any athenticated user or login user
-- **GET /users/:id** — Get a particular user (Admin only)
-- **PUT /users/:id** — Edit a particular user (Admin only)
-- **PATCH /users/:id/reset-password** — Reset password of a particular user (Admin only)
-- **DELETE /users/:id** — Delete a particular user (Admin only)
+- **GET /me** — Get profile of athenticated user or login user
+- **PATCH /me** — Update profile by athenticated user or login user
+- **GET /:id** — Get a particular user (Admin only)
+- **PATCH /:id** — Update a particular user (Admin only)
+- **PATCH /:id/reset-password** — Reset password of a particular user (Admin only)
+- **DELETE /:id** — Delete a particular user (Admin only)
 
 #### Response Metadata for GET all Users requests
 - `results` → number of items returned
@@ -112,9 +108,9 @@ Example of supported query parameters:
 - `limit` → results per page
 - `data` → array of objects
 
-### Projects
-- **POST /projects** — Create project (Manager/Admin)
-- **GET /projects** — Get all projects (Admin)
+### Projects `/api/v1/projects`
+- **POST /** — Create project (Manager/Admin)
+- **GET /** — Get all projects (Admin)
 
 Supports query parameters:
 - `search` → keyword search in title, description
@@ -124,13 +120,20 @@ Supports query parameters:
 - `page` → page number for pagination (e.g., `page=1`)
 - `limit` → results per page (e.g., `limit=10`)
 
-- **GET /projects/:id** — Get a particular project (Authenticated users)
-- **PUT /projects/:id** — Edit project (Owner/Admin)
-- **DELETE /projects/:id** — Delete project (Owner/Admin)
+- **GET /:id** — Get a particular project (Authenticated users)
+- **PATCH /:id** — Update project (Owner/Admin)
+- **DELETE /:id** — Delete project (Owner/Admin)
 
-### Tasks
-- **POST /tasks** — Create task (Manager/Admin)
-- **GET /tasks** — Get all tasks (Authenticated users)
+#### Response Metadata for GET all Users requests
+- `results` → number of items returned
+- `total` → total items matching filters
+- `page` → current page
+- `limit` → results per page
+- `data` → array of objects
+
+### Tasks `/api/v1/tasks`
+- **POST /** — Create task (Manager/Admin)
+- **GET /** — Get all tasks (Authenticated users)
 
 Supports query parameters:
 - `search` → keyword search in title, description
@@ -141,8 +144,8 @@ Supports query parameters:
 - `page` → page number for pagination (e.g., `page=1`)
 - `limit` → results per page (e.g., `limit=10`)
 
-- **GET /tasks/:id** — Get a particular task
-- **PUT /tasks/:id** — Edit a particular task (ownership rules in progress)
+- **GET /:id** — Get a particular task
+- **PATCH /:id** — Update a particular task (ownership rules in progress)
 - **DELETE /tasks/:id** — Delete a particular task (restricted access in progress)
 
 #### Response Metadata for GET all Tasks requests

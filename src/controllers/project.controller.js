@@ -119,19 +119,24 @@ const getProject = catchAsync(
 )
 
 // Edit a particular Project
-const editProject = catchAsync(
+const updateProject = catchAsync(
     /** @type {RequestHandler} */
     async (req, res, next) => {
-        const { title, description, status } = req.body;
+        const { title, description, status, owner } = req.body;
 
-        const filter =
-            req.user.role === "admin"
-                ? { _id: req.params.id }
-                : { _id: req.params.id, owner: req.user.id };
+        const filterFields = req.user.role === 'admin'
+            ? { title, description, status, owner }
+            : { title, description, status }
+
+
+
+        const filter = req.user.role === "admin"
+            ? { _id: req.params.id }
+            : { _id: req.params.id, owner: req.user.id };
 
         const project = await Projects.findOneAndUpdate(
             filter,
-            { title, description, status },
+            filterFields,
             { returnDocument: 'after', runValidators: true }
         ).select("title description status createdAt owner");
 
@@ -170,4 +175,4 @@ const deleteProject = catchAsync(
     }
 )
 
-module.exports = { createProject, getAllProjects, getProject, editProject, deleteProject }
+module.exports = { createProject, getAllProjects, getProject, updateProject, deleteProject }
