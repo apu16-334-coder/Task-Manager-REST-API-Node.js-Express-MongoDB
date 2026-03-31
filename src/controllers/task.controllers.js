@@ -111,13 +111,11 @@ const getAllTasks = catchAsync(
         const limit = +req.query.limit || 10;
         const skip = (page - 1) * limit;
 
-        query = query.skip(skip).limit(limit);
-
-        // 7. Field selection
-        query = query.select('title description priority status createdAt');
-
         // 8. Execute query
-        const tasks = await query;
+        const tasks = await query
+        .skip(skip) // added skip
+        .limit(limit) // added limit
+        .select('title description priority status createdAt'); // selecting fields
 
         res.status(200).json({
             success: true,

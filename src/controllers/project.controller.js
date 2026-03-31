@@ -80,16 +80,12 @@ const getAllProjects = catchAsync(
         const limit = +req.query.limit || 10;
         const skip = (page - 1) * limit;
 
-        query = query.skip(skip).limit(limit);
-
-        // select field
-        query = query.select("title description status createdAt owner");
-
-        // populate owner
-        query = query.populate('owner', 'name email')
-
         // execute query
-        const projects = await query;
+        const projects = await query
+            .skip(skip) // added skip
+            .limit(limit) // added limit
+            .select("title description status createdAt owner") // added fields selection
+            .populate('owner', 'name email'); // added owner populate
 
         res.status(200).json({
             success: true,
@@ -132,6 +128,8 @@ const getMyProjects = catchAsync(
         // Count total matching documents (No pagination here)
         const total = await Projects.countDocuments(queryObj);
 
+        
+
         // Build query 
         let query = Projects.find(queryObj);
 
@@ -143,16 +141,21 @@ const getMyProjects = catchAsync(
 
         // Pagination
         const page = +req.query.page || 1;
-        const limit = +req.query.limit || 10;
+        const limit = +req.query.limit || 5;
         const skip = (page - 1) * limit;
 
-        query = query.skip(skip).limit(limit);
-
-        // select field
-        query = query.select("title description status createdAt");
+        // execute query
+        const projects = await query
+            .skip(skip) // added skip
+            .limit(limit) // added limit
+            .select("title description status createdAt owner"); // added fields selection
 
         res.status(200).json({
-            succcess: true,
+            success: true,
+            results: projects.length,
+            total,
+            page,
+            limit,
             data: projects
         })
     }
@@ -188,17 +191,24 @@ const updateProject = catchAsync(
             ? { title, description, status, owner }
             : { title, description, status }
 
-
-
         const filter = req.user.role === "admin"
             ? { _id: req.params.id }
             : { _id: req.params.id, owner: req.user.id };
 
-        const project = await Projects.findOneAndUpdate(
+        let  query = Projects.findOneAndUpdate(
             filter,
             filterFields,
             { returnDocument: 'after', runValidators: true }
-        ).select("title description status owner");
+        )
+        
+        query.select("title description status");
+
+        if(req.user.role === 'admin') {
+            query.select("owner").populate('owner', 'name email')
+        }
+
+        // execute query
+        const project = await query;
 
         if (!project) {
             return next(new AppError(403, "You are not allowed to edit this project"));
