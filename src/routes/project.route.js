@@ -5,7 +5,8 @@ const router = express.Router()
 const { 
     createProject, 
     getAllProjects, 
-    getProject, 
+    getProject,
+    getMyProjects,
     updateProject, 
     deleteProject 
 } = require("../controllers/project.controller.js")
@@ -14,6 +15,9 @@ const {
 router.route("/")
     .post(protect, restrictTo('manager','admin'), createProject)
     .get(protect, restrictTo('admin'), getAllProjects)
+
+router.route("/my")
+    .get(protect,  restrictTo('manager'), getMyProjects)
 
 router.route("/:id")
     .get(protect, getProject)
