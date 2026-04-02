@@ -12,7 +12,7 @@ const Users = require("../models/user.model.js");
 const createTask = catchAsync(
     /** @type {RequestHandler} */
     async (req, res, next) => {
-        const { title, description, project, assignedTo, dueDate } = req.body;
+        const { title, description, priority, status, dueDate, project, assignedTo } = req.body;
 
         const projectDoc = await Projects.findById(project);
 
@@ -24,7 +24,7 @@ const createTask = catchAsync(
             projectDoc.owner.toString() !== req.user.id &&
             req.user.role !== 'admin'
         ) {
-            return next(new AppError(403, "Not allowed to add task to this project"));
+            return next(new AppError(403, `You are not allowed to add task to ${projectDoc.title} project`));
         }
 
         if (assignedTo) {
@@ -35,26 +35,12 @@ const createTask = catchAsync(
             }
         }
 
-        const task = await Tasks.create({
-            title,
-            description,
-            project,
-            assignedTo,
-            dueDate
-        });
+        const tasks = await Tasks.create({ title, description, priority, status, dueDate, project, assignedTo });
 
         res.status(201).json({
             success: true,
-            data: {
-                id: task.id,
-                title: task.title,
-                description: task.description,
-                priority: task.priority,
-                status: task.status,
-                createdAt: task.createdAt
-            }
+            data: tasks
         })
-
     }
 )
 
@@ -115,7 +101,6 @@ const getAllTasks = catchAsync(
         const tasks = await query
         .skip(skip) // added skip
         .limit(limit) // added limit
-        .select('title description priority status createdAt'); // selecting fields
 
         res.status(200).json({
             success: true,

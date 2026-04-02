@@ -32,8 +32,7 @@ const createUser = catchAsync(
                 name: user.name,
                 email: user.email,
                 role: user.role,
-                isActive: user.isActive,
-                createdAt: user.createdAt
+                isActive: user.isActive
             }
         })
 

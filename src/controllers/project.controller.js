@@ -10,7 +10,7 @@ const catchAsync = require("../utils/catchAsync.js")
 const createProject = catchAsync(
     /** @type {RequestHandler} */
     async (req, res, next) => {
-        const { title, description } = req.body;
+        const { title, description, status } = req.body;
 
         if (req.user.role === 'admin' && !req.body.owner) {
             return next(new AppError(400, 'Owner is required'))
@@ -21,17 +21,11 @@ const createProject = catchAsync(
                 ? req.body.owner
                 : req.user.id;
 
-        const project = await Projects.create({ title, description, owner })
+        const project = await Projects.create({ title, description, status, owner })
 
         res.status(201).json({
             success: true,
-            data: {
-                id: project.id,
-                title: project.title,
-                description: project.description,
-                status: project.status,
-                createdAt: project.createdAt
-            }
+            data: project
         })
     }
 )
@@ -84,7 +78,6 @@ const getAllProjects = catchAsync(
         const projects = await query
             .skip(skip) // added skip
             .limit(limit) // added limit
-            .select("title description status createdAt owner") // added fields selection
             .populate('owner', 'name email'); // added owner populate
 
         res.status(200).json({
@@ -148,7 +141,7 @@ const getMyProjects = catchAsync(
         const projects = await query
             .skip(skip) // added skip
             .limit(limit) // added limit
-            .select("title description status createdAt owner"); // added fields selection
+            .select("title description status createdAt"); // added fields selection
 
         res.status(200).json({
             success: true,
@@ -165,9 +158,18 @@ const getMyProjects = catchAsync(
 const getProject = catchAsync(
     /** @type {RequestHandler} */
     async (req, res, next) => {
-        const project = await Projects.findById(req.params.id)
-            .select("title description status createdAt owner")
+        let query = Projects.findById(req.params.id)
+
+
+        query.select("title description owner")
             .populate('owner', 'name email');
+
+        if(req.user.role !== 'user') {
+            query.select('status createdAt')
+        }
+
+        // Execute query
+        const project = await query;
 
         if (!project) {
             return next(new AppError(404, "Project not found"));

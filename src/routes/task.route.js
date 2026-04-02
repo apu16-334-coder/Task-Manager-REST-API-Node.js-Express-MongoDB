@@ -13,7 +13,7 @@ const {
 
 router.route("/")
     .post(protect, restrictTo('manager','admin'), createTask)
-    .get(protect, getAllTasks)
+    .get(protect, restrictTo('manager','admin'), getAllTasks)
 
 router.route("/:id")
     .get(protect, getTask)
