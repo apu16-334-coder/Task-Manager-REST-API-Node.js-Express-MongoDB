@@ -99,8 +99,10 @@ const getAllTasks = catchAsync(
 
         // 8. Execute query
         const tasks = await query
-        .skip(skip) // added skip
-        .limit(limit) // added limit
+            .skip(skip) // added skip
+            .limit(limit) // added limit
+            .populate('project', 'title')
+            .populate('assignedTo', 'name email')
 
         res.status(200).json({
             success: true,

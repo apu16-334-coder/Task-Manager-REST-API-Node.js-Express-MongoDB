@@ -160,7 +160,6 @@ const getProject = catchAsync(
     async (req, res, next) => {
         let query = Projects.findById(req.params.id)
 
-
         query.select("title description owner")
             .populate('owner', 'name email');
 
