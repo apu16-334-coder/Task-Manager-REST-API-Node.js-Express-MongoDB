@@ -71,11 +71,13 @@ This project demonstrates real-world backend engineering practices including aut
 ---
 
 ### Tasks API
-- Any authenticated user can view tasks
+- Admin and manager can view tasks but manager will see only their projects belonging tasks
 - Supports filtering, sorting, and pagination
-- Task creation restricted to project manager of task/admin
+- Assigned user can view their tasks
+- Any authentic user can view a particular task
+- Task creation restricted to project manager of task and admin
 - Task update is restricted based on ownership and assignment
-- Task delete restricted to project manager of task/admin
+- Task delete restricted to project manager of task and admin
 
 ---
 
@@ -148,7 +150,18 @@ Supports query parameters:
 
 ### Tasks `/api/v1/tasks`
 - **POST /** — Create task (Manager/Admin)
-- **GET /** — Get all tasks (Authenticated users)
+- **GET /** — Get all tasks (Manager/Admin) manager get their projects belonging tasks
+
+Supports query parameters:
+- `search` → keyword search in title, description
+- `priority` → single or multiple values (e.g., `priority=high` or `priority=high,medium`)
+- `status` → single or multiple values (e.g., `status=todo` or `status=todo,done`)
+- `createdAt` → date filtering using `gte`, `gt`, `lte`, `lt` (e.g., `createdAt[gte]=2026-01-01`)
+- `sort` → comma-separated fields (e.g., `sort=-createdAt`)
+- `page` → page number for pagination (e.g., `page=1`)
+- `limit` → results per page (e.g., `limit=10`)
+
+- **- **GET /my** — Get all tasks of assigned user  (Assigned users)
 
 Supports query parameters:
 - `search` → keyword search in title, description
@@ -160,8 +173,8 @@ Supports query parameters:
 - `limit` → results per page (e.g., `limit=10`)
 
 - **GET /:id** — Get a particular task
-- **PATCH /:id** — Update a particular task (ownership rules in progress)
-- **DELETE /tasks/:id** — Delete a particular task (restricted access in progress)
+- **PATCH /:id** — Update a particular task (Manager ownership baised/ Admin / user only status)
+- **DELETE /tasks/:id** — Delete a particular task (Manager ownership baised/ Admin)
 
 #### Response Metadata for GET all Tasks requests
 - `results` → number of items returned
@@ -193,8 +206,8 @@ Actively under development
 ✔ Filtering, sorting, searching, pagination implemented in User CRUD api endpoint  
 ✔ Project-level ownership authorization implemented  
 ✔ Filtering, sorting, searching, pagination implemented in Project CRUD api endpoint  
-⏳ Task-level ownership + field-level authorization in progress  
-⏳ Project-member based task assignment system (planned)
+✔ Task-level ownership + field-level authorization in progress   
+✔ Filtering, sorting, searching, pagination implemented in Task CRUD api endpoint   
 
 ---
 
