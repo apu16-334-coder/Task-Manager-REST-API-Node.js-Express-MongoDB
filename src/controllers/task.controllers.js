@@ -50,13 +50,13 @@ const getAllTasks = catchAsync(
     async (req, res, next) => {
         // 1. Build base filter object
         let queryObj = { ...req.query };
-        
+
         ['page', 'limit', 'sort', 'search'].forEach(el => {
-            if(queryObj[el]) {
+            if (queryObj[el]) {
                 delete queryObj[el]
             }
         });
-        
+
 
         // Handle multi-value fields
         const multiValueFields = ['priority', 'status']; // only actual schema fields
@@ -81,15 +81,15 @@ const getAllTasks = catchAsync(
         }
 
         // Restrcit response to manager
-        if(req.user.role === 'manager'){
-            const projectIds = await Projects.find({owner: req.user.id}).select('id')
-            queryObj.project = { $in: projectIds}
+        if (req.user.role === 'manager') {
+            const projectIds = await Projects.find({ owner: req.user.id }).select('id')
+            queryObj.project = { $in: projectIds }
         }
 
         // 3. Count total matching documents (NO pagination here)
         const total = await Tasks.countDocuments(queryObj);
 
-        
+
 
         // 4. Build query
         let query = Tasks.find(queryObj);
@@ -105,11 +105,12 @@ const getAllTasks = catchAsync(
         const limit = +req.query.limit || 10;
         const skip = (page - 1) * limit;
 
-        // 8. Execute query
-        const tasks = await query
-            .skip(skip) // added skip
-            .limit(limit) // added limit
-            .populate({
+        query.skip(skip).limit(limit) // added skip and limit
+
+        query.populate('assignedTo', 'name email')
+
+        if (req.user.role === 'admin') {
+            query.populate({
                 path: 'project',
                 select: 'title',
                 populate: {
@@ -117,7 +118,12 @@ const getAllTasks = catchAsync(
                     select: 'name email'
                 }
             })
-            .populate('assignedTo', 'name email')
+        } else {
+            query.populate('project', 'title');
+        }
+
+        // 8. Execute query
+        const tasks = await query;
 
         res.status(200).json({
             success: true,
@@ -136,13 +142,13 @@ const getMyTasks = catchAsync(
     async (req, res, next) => {
         // 1. Build base filter object
         let queryObj = { assignedTo: req.user.id, ...req.query };
-        
+
         ['page', 'limit', 'sort', 'search'].forEach(el => {
-            if(queryObj[el]) {
+            if (queryObj[el]) {
                 delete queryObj[el]
             }
         });
-        
+
         // Handle multi-value fields
         const multiValueFields = ['priority', 'status']; // only actual schema fields
         multiValueFields.forEach(field => {
@@ -214,16 +220,21 @@ const getTask = catchAsync(
         let query = Tasks.findById(req.params.id)
 
         query.select('title description priority status dueDate project ')
-            .populate({
+
+        if (req.user.role === 'admin' || req.user.role === 'user') {
+            query.populate({
                 path: 'project',
-                select: 'title owner',
+                select: 'title',
                 populate: {
                     path: 'owner',
                     select: 'name email'
                 }
             })
+        } else {
+            query.populate('project', 'title');
+        }
 
-        if(req.user.role !== 'user') {
+        if (req.user.role !== 'user') {
             query.select('assignedTo')
                 .populate('assignedTo', 'name email')
         }
@@ -271,15 +282,58 @@ const updateTask = catchAsync(
             return next(new AppError(403, "You are not allowed to edit this task"));
         }
 
+        if (isProjectOwner || isAdmin) {
+            if (project) {
+                console.log(project)
+                const projectDoc = await Projects.findById(project);
+
+                if (!projectDoc) {
+                    return next(new AppError(404, "Project not found"));
+                }
+
+                if (projectDoc.owner.toString() !== req.user.id) {
+                    return next(new AppError(403, `You are not allowed to add task to ${projectDoc.title} project`));
+                }
+            }
+
+            if (assignedTo) {
+                const user = await Users.findById(assignedTo);
+
+                if (!user) {
+                    return next(new AppError(404, "Assigned user not found"));
+                }
+            }
+        }
+
         const filteredFields = isAssignedUser
             ? { status }
             : { title, description, priority, status, dueDate, project, assignedTo }
 
-        const updatedTask = await Tasks.findByIdAndUpdate(
+        let query = Tasks.findByIdAndUpdate(
             req.params.id,
             filteredFields,
             { returnDocument: 'after', runValidators: true }
-        ).select('title description priority status createdAt');
+        ).select('title description priority status dueDate project')
+
+        if (req.user.role === 'admin') {
+            query.populate({
+                path: 'project',
+                select: 'title',
+                populate: {
+                    path: 'owner',
+                    select: 'name email'
+                }
+            })
+        } else {
+            query.populate('project', 'title');
+        }
+
+        if (req.user.role !== 'user') {
+            query.select('assignedTo')
+                .populate('assignedTo', 'name email')
+        }
+
+        const updatedTask = await query;
 
         res.status(200).json({
             success: true,
