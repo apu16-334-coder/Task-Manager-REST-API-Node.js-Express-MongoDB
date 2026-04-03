@@ -80,8 +80,16 @@ const getAllTasks = catchAsync(
             ];
         }
 
+        // Restrcit response to manager
+        if(req.user.role === 'manager'){
+            const projectIds = await Projects.find({owner: req.user.id}).select('id')
+            queryObj.project = { $in: projectIds}
+        }
+
         // 3. Count total matching documents (NO pagination here)
         const total = await Tasks.countDocuments(queryObj);
+
+        
 
         // 4. Build query
         let query = Tasks.find(queryObj);
@@ -101,7 +109,14 @@ const getAllTasks = catchAsync(
         const tasks = await query
             .skip(skip) // added skip
             .limit(limit) // added limit
-            .populate('project', 'title')
+            .populate({
+                path: 'project',
+                select: 'title',
+                populate: {
+                    path: 'owner',
+                    select: 'name email'
+                }
+            })
             .populate('assignedTo', 'name email')
 
         res.status(200).json({
@@ -119,8 +134,18 @@ const getAllTasks = catchAsync(
 const getTask = catchAsync(
     /** @type {RequestHandler} */
     async (req, res, next) => {
-        const task = await Tasks.findById(req.params.id)
-            .select('title description priority status createdAt');
+        let query = Tasks.findById(req.params.id)
+
+        query.select('title description priority status dueDate project ')
+            .populate('project', 'title')
+
+        if(req.user.role !== 'user') {
+            query.select('assignedTo')
+                .populate('assignedTo', 'name email')
+        }
+
+        // Execute query
+        const task = await query;
 
         if (!task) {
             return next(new AppError(404, 'Task not found'));

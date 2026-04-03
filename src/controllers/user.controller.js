@@ -157,7 +157,6 @@ const updateMe = catchAsync(
             success: true,
             data: user
         })
-
     }
 )
 
