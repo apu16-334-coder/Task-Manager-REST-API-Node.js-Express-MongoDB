@@ -5,6 +5,7 @@ const router = express.Router()
 const { 
     createTask, 
     getAllTasks, 
+    getMyTasks,
     getTask, 
     updateTask, 
     deleteTask
@@ -14,6 +15,9 @@ const {
 router.route("/")
     .post(protect, restrictTo('manager','admin'), createTask)
     .get(protect, restrictTo('manager','admin'), getAllTasks)
+
+router.route("/my")
+    .get(protect, restrictTo('user'), getMyTasks)
 
 router.route("/:id")
     .get(protect, getTask)

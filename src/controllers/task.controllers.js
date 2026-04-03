@@ -130,6 +130,83 @@ const getAllTasks = catchAsync(
     }
 )
 
+// get my assigned task
+const getMyTasks = catchAsync(
+    /** @type {RequestHandler} */
+    async (req, res, next) => {
+        // 1. Build base filter object
+        let queryObj = { assignedTo: req.user.id, ...req.query };
+        
+        ['page', 'limit', 'sort', 'search'].forEach(el => {
+            if(queryObj[el]) {
+                delete queryObj[el]
+            }
+        });
+        
+        // Handle multi-value fields
+        const multiValueFields = ['priority', 'status']; // only actual schema fields
+        multiValueFields.forEach(field => {
+            if (queryObj[field]) {
+                const values = queryObj[field].split(','); // convert string to array
+                queryObj[field] = { $in: values };
+            }
+        });
+
+        // Advanced filtering (gte, gt, lte, lt)
+        let queryStr = JSON.stringify(queryObj);
+        queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, match => `$${match}`);
+        queryObj = JSON.parse(queryStr);
+
+        // 2. Add search condition
+        if (req.query.search) {
+            queryObj.$or = [
+                { title: { $regex: req.query.search, $options: 'i' } },
+                { description: { $regex: req.query.search, $options: 'i' } }
+            ];
+        }
+
+        // 3. Count total matching documents (NO pagination here)
+        const total = await Tasks.countDocuments(queryObj);
+
+        // 4. Build query
+        let query = Tasks.find(queryObj);
+
+        // 5. Sorting
+        const sortBy = req.query.sort
+            ? req.query.sort.split(',').join(' ')
+            : '-createdAt';
+        query = query.sort(sortBy);
+
+        // 6. Pagination
+        const page = +req.query.page || 1;
+        const limit = +req.query.limit || 10;
+        const skip = (page - 1) * limit;
+
+        // 8. Execute query
+        const tasks = await query
+            .skip(skip) // added skip
+            .limit(limit) // added limit
+            .select('title description priority status dueDate project ')
+            .populate({
+                path: 'project',
+                select: 'title',
+                populate: {
+                    path: 'owner',
+                    select: 'name email'
+                }
+            })
+
+        res.status(200).json({
+            success: true,
+            results: tasks.length,
+            total,
+            page,
+            limit,
+            data: tasks
+        });
+    }
+)
+
 // Get a particular task
 const getTask = catchAsync(
     /** @type {RequestHandler} */
@@ -137,7 +214,14 @@ const getTask = catchAsync(
         let query = Tasks.findById(req.params.id)
 
         query.select('title description priority status dueDate project ')
-            .populate('project', 'title')
+            .populate({
+                path: 'project',
+                select: 'title owner',
+                populate: {
+                    path: 'owner',
+                    select: 'name email'
+                }
+            })
 
         if(req.user.role !== 'user') {
             query.select('assignedTo')
@@ -230,8 +314,7 @@ const deleteTask = catchAsync(
             success: true,
             message: 'successfully deleted'
         });
-
     }
 )
 
-module.exports = { createTask, getAllTasks, getTask, updateTask, deleteTask }
+module.exports = { createTask, getAllTasks, getMyTasks, getTask, updateTask, deleteTask }
