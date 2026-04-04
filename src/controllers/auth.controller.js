@@ -1,18 +1,27 @@
+// Load dependencies
+const bcrypt = require("bcrypt")
+const jwt = require("jsonwebtoken");
+
+// Import important Modules
 const catchAsync = require("../utils/catchAsync.js")
 const Users = require("../models/user.model.js")
-const bcrypt = require("bcrypt")
 const AppError = require("../utils/AppError.js")
-const jwt = require("jsonwebtoken");
 
 /**
  * @typedef {import('express').RequestHandler} RequestHandler
  */
 
+/**
+ * signUp
+ * Creates a new user account
+ * POST /api/v1/auth/signup
+ */
 const signUp = catchAsync(
     /** @type {RequestHandler} */
     async (req, res, next) => {
         const { name, email, password } = req.body;
 
+        // Create user in database (password will be hashed via pre-save middleware)
         await Users.create({ name, email, password });
 
         res.status(201).json({
@@ -22,6 +31,11 @@ const signUp = catchAsync(
     }
 )
 
+/**
+ * logIn
+ * Authenticates a user and returns JWT
+ * POST /api/v1/auth/login
+ */
 const logIn = catchAsync(
     /** @type {RequestHandler} */
     async (req, res, next) => {
@@ -31,17 +45,12 @@ const logIn = catchAsync(
         // find user + include password
         const user = await Users.findOne({ email }).select('+password');
 
-        // if user is not found
-        if (!user) {
+        // if user is not found or password does not match
+        if (!user || !(await bcrypt.compare(password, user.password))) {
             return next(new AppError(401, "Invalid email or password"))
         }
 
-        // compare password if not match
-        if (! await bcrypt.compare(password, user.password)) {
-            return next(new AppError(401, "Invalid email or password"))
-        }
-
-        // create JWT
+        // Generate JWT token
         const token = jwt.sign(
             { id: user.id },
             process.env.JWT_SECRET,
@@ -61,25 +70,29 @@ const logIn = catchAsync(
     }
 )
 
+/**
+ * changePassword
+ * Allows authenticated user to change their password
+ * PATCH /api/v1/auth/change-password
+ */
 const changePassword = catchAsync(
     /** @type {RequestHandler} */
     async (req, res, next) => {
         const { currentPassword, newPassword } = req.body;
 
-        if(!currentPassword) {
+        if (!currentPassword) {
             return next(new AppError(400, 'Current password is required'))
         }
 
-        if(!newPassword) {
+        if (!newPassword) {
             return next(new AppError(400, 'New password is required'))
         }
 
+        // Find current user with password
         const user = await Users.findById(req.user.id).select('+password')
-
-        if (!user) {
-            return next(new AppError(404, 'User not found'))
-        }
-
+        if (!user) return next(new AppError(404, 'User not found'))
+        
+        // Verify current password
         if (! await bcrypt.compare(currentPassword, user.password)) {
             return next(new AppError(401, 'Current password is incorrect'))
         }

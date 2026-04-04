@@ -1,14 +1,15 @@
-const { noRouteFound, globalErrorHandler } = require("./middlewares/error.middleware.js")
+// Load dependencies
+const express = require("express")
+const helmet = require("helmet")
+const cors = require("cors")
+const rateLimit = require("express-rate-limit");
 
+// Import important modules
+const { noRouteFound, globalErrorHandler } = require("./middlewares/error.middleware.js")
 const userRouter = require("./routes/user.route.js")
 const projectRouter = require("./routes/project.route.js")
 const taskRouter = require("./routes/task.route.js")
 const authRouter = require("./routes/auth.route.js")
-
-const express = require("express")
-const helmet = require("helmet")
-const cors = require("cors")
-
 
 const app = express()
 
@@ -19,8 +20,16 @@ app.set('query parser', 'extended');
 app.use(helmet())
 app.use(cors())
 
-// Body parser with limit
+// Body parser: limit JSON size to 10kb to prevent large payload abuse
 app.use(express.json({ limit: "10kb" }))
+
+// Rate Limiter: limit requests to 100 per IP per hour
+const limiter = rateLimit({
+    max: 100,
+    windowMs: 60 * 60 * 1000, // 1 hour
+    message: "Too many requests from this IP, please try again later."
+});
+app.use("/api", limiter);
 
 // Health route
 app.get("/", (req, res) => {

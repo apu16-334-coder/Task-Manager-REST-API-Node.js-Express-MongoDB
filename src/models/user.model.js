@@ -1,6 +1,8 @@
+// Load dependencies
 const mongoose = require("mongoose")
 const bcrypt = require("bcrypt")
 
+// User Schema
 const userSchema = new mongoose.Schema({
     name: {
         type: String,
@@ -48,16 +50,22 @@ const userSchema = new mongoose.Schema({
     passwordChangedAt: Date
 })
 
+// Pre-save middleware
+// Hash password if modified and set passwordChangedAt
 userSchema.pre("save", async function () {
     if (!this.isModified("password")) return;
 
+    // Hash the password
     this.password = await bcrypt.hash(this.password, 12);
 
+    // Update passwordChangedAt if document is not new
     if (!this.isNew) {
-        this.passwordChangedAt = Date.now() - 1000;
+        this.passwordChangedAt = Date.now() - 1000; // subtract 1 sec to ensure token validity
     }
 });
 
+// Transform output for JSON / Object
+// Remove _id and __v, add id string
 const transform = (doc, ret) => {
     ret.id = ret._id.toString();
     delete ret._id;

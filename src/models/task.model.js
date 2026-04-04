@@ -30,6 +30,7 @@ const taskSchema = new mongoose.Schema({
         type: Date,
         validate: {
             validator: function (val) {
+                // Due date must be in the future (if provided)
                 return !val || val >= Date.now()
             },
             message: 'Due date must be in the future'
@@ -54,6 +55,10 @@ const taskSchema = new mongoose.Schema({
 
 })
 
+// ------------------------------
+// Transform output for JSON / Object
+// Removes _id and __v, adds id
+// ------------------------------
 const transform = (doc, ret) => {
     ret.id = ret._id.toString();
     delete ret._id;

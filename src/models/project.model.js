@@ -32,6 +32,11 @@ const projectSchema = new mongoose.Schema({
     }
 });
 
+// ------------------------------
+// Transform output for JSON / Object
+// Removes _id, __v, adds id
+// ------------------------------
+
 const transform = (doc, ret) => {
     ret.id = ret._id.toString();
     delete ret._id;
