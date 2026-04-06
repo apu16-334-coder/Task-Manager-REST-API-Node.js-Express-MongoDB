@@ -395,7 +395,7 @@ const deleteTask = catchAsync(
 
         await Tasks.findByIdAndDelete(req.params.id);
 
-        res.status(200).json({
+        res.status(204).json({
             success: true,
             message: 'successfully deleted'
         });

@@ -134,6 +134,46 @@ All list endpoints return:
 
 ---
 
+## 📘 API Response Fields
+
+### ✅ Success Response Structure
+
+#### 🔹 List Response (GET all)
+
+`json`
+{
+  "success": true,
+  "results": number,   // number of items returned in current response
+  "total": number,     // total items matching the query in database
+  "page": number,      // current page number
+  "limit": number,     // number of items per page
+  "data": [            // array of resources
+    {
+      // resource object
+    }
+  ]
+}
+
+#### 🔹 Single Resource Response (GET one)
+
+`json`
+{
+  "success": true,
+  "data": {
+    // single resource object
+  }
+}
+
+#### ❌ Error Response Structure
+
+`Json`
+{
+  "success": false,
+  "message": "Error message describing what went wrong"
+}
+
+---
+
 ## 🛠 Tech Stack
 
 - Node.js
@@ -177,7 +217,7 @@ All list endpoints return:
 
 Create a `.env` file:
 
-```env
+`env`
 NODE_ENV=development
 PORT=3000
 
