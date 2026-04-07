@@ -268,7 +268,7 @@ const deleteProject = catchAsync(
             return next(new AppError(403, "You are not allowed to delete this project"));
         }
 
-        res.status(200).json({
+        res.status(204).json({
             success: true,
             message: "successfully deleted"
         })

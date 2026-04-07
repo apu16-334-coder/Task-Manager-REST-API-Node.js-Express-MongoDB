@@ -174,6 +174,19 @@ All list endpoints return:
 
 ---
 
+### 📡 HTTP Status Codes
+
+- `200 OK` → Successful GET, PATCH requests  
+- `201 Created` → Resource successfully created  
+- `204 No Content` → Successful delete (no response body)  
+- `400 Bad Request` → Invalid input or validation error  
+- `401 Unauthorized` → Not authenticated (no/invalid token)  
+- `403 Forbidden` → Authenticated but no permission  
+- `404 Not Found` → Resource not found  
+- `500 Internal Server Error` → Server-side error
+
+---
+
 ## 🛠 Tech Stack
 
 - Node.js
