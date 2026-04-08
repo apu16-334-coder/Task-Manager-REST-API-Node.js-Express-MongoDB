@@ -187,6 +187,16 @@ All list endpoints return:
 
 ---
 
+## 🌐 Live API
+
+Base URL:
+https://task-manager-rest-api-node-js-express.onrender.com
+
+Example:
+GET /api/v1/users
+
+---
+
 ## 🛠 Tech Stack
 
 - Node.js
