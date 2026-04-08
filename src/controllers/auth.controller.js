@@ -42,6 +42,16 @@ const logIn = catchAsync(
         // get requested email and password
         const { email, password } = req.body;
 
+        // If email is empty
+        if(!email) {
+            return next(new AppError(400, 'Email is required'));
+        }
+
+        // If password is empty
+        if(!email) {
+            return next(new AppError(400, 'Password is required'));
+        }
+
         // find user + include password
         const user = await Users.findOne({ email }).select('+password');
 
@@ -88,7 +98,7 @@ const changePassword = catchAsync(
             return next(new AppError(400, 'New password is required'))
         }
 
-        // Find current user with password
+        // Find current user + password
         const user = await Users.findById(req.user.id).select('+password')
         if (!user) return next(new AppError(404, 'User not found'))
         
