@@ -39,7 +39,9 @@ const signUp = catchAsync(
 const logIn = catchAsync(
     /** @type {RequestHandler} */
     async (req, res, next) => {
-        // get requested email and password
+        // // get requested email and password
+        // console.log("LOGIN HIT");
+        // console.log(req.body)
         const { email, password } = req.body;
 
         // If email is empty
@@ -48,7 +50,7 @@ const logIn = catchAsync(
         }
 
         // If password is empty
-        if(!email) {
+        if(!password) {
             return next(new AppError(400, 'Password is required'));
         }
 
