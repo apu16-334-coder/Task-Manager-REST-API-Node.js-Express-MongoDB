@@ -256,6 +256,10 @@ const updateProject = catchAsync(
 const deleteProject = catchAsync(
     /** @type {RequestHandler} */
     async (req, res, next) => {
+        if(!await Projects.findById(req.params.id)) {
+            return next(new AppError(404, "Project not found"));
+        }
+
         // Filter fields to create query according to role and ownership
         const filter =
             req.user.role === "admin"
@@ -268,10 +272,7 @@ const deleteProject = catchAsync(
             return next(new AppError(403, "You are not allowed to delete this project"));
         }
 
-        res.status(204).json({
-            success: true,
-            message: "successfully deleted"
-        })
+        res.status(204).send()
 
     }
 )

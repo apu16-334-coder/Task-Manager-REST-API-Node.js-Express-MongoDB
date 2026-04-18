@@ -244,10 +244,7 @@ const deleteUser = catchAsync(
             return next(new AppError(404, "User not found"));
         }
 
-        res.status(204).json({
-            success: true,
-            message: "successfully deleted"
-        })
+        res.status(204).send()
 
     }
 )
