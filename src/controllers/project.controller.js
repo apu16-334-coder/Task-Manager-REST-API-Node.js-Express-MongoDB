@@ -208,6 +208,10 @@ const getProject = catchAsync(
 const updateProject = catchAsync(
     /** @type {RequestHandler} */
     async (req, res, next) => {
+        if(!await Projects.findById(req.params.id)) {
+            return next(new AppError(404, "Project not found"));
+        }
+        
         const { title, description, status, owner } = req.body;
 
         // Filter fields to update according to role and ownership
