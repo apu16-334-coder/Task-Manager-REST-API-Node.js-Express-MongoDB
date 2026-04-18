@@ -395,7 +395,7 @@ const deleteTask = catchAsync(
 
         await Tasks.findByIdAndDelete(req.params.id);
 
-        res.status(204).send()
+        res.status(204).send
     }
 )
 

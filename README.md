@@ -187,6 +187,18 @@ All list endpoints return:
 
 ---
 
+## 📬 API Testing (Postman)
+
+You can test all API endpoints using Postman.
+
+### 🔽 Import Collection
+
+1. Open Postman
+2. Click **Import**
+3. Select the file:
+
+---
+
 ## 🌐 Live API
 
 Base URL:
@@ -194,6 +206,22 @@ https://task-manager-rest-api-node-js-express.onrender.com
 
 Example:
 GET /api/v1/users
+
+---
+
+### 🔐 Authentication
+
+- Login to get JWT token
+- Add token in headers: 
+- Authorization: Bearer <your_token>
+
+---
+
+### 📌 Notes
+
+- Collection includes all endpoints (Auth, Users, Projects, Tasks)
+- Requests are pre-configured for quick testing
+- Update base URL if running locally
 
 ---
 
@@ -255,4 +283,3 @@ JWT_EXPIRES_IN=1d
 ## ⚙️ Run Locally
 npm install
 npm run dev
-

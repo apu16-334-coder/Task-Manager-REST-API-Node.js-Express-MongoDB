@@ -1,0 +1,881 @@
+{
+  "info": {
+    "_postman_id": "1eee4c98-4b69-42e7-9fac-dabd00d529d1",
+    "name": "Task Manager API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "53827795",
+    "_collection_link": "https://go.postman.co/collection/53827795-1eee4c98-4b69-42e7-9fac-dabd00d529d1?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "Log In",
+      "request": {
+        "auth": {
+          "type": "noauth"
+        },
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"email\": \"saidul@gmail.com\", \r\n    \"password\": \"1234567890saidul\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "https://task-manager-rest-api-node-js-express.onrender.com/api/v1/auth/login",
+          "protocol": "https",
+          "host": [
+            "task-manager-rest-api-node-js-express",
+            "onrender",
+            "com"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "auth",
+            "login"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Sign In",
+      "request": {
+        "auth": {
+          "type": "noauth"
+        },
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"name\": \"Habibur Rahman\",\r\n    \"email\": \"habib@gmail.com\",\r\n    \"password\": \"1234567890habib\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "https://task-manager-rest-api-node-js-express.onrender.com/api/v1/auth/signup",
+          "protocol": "https",
+          "host": [
+            "task-manager-rest-api-node-js-express",
+            "onrender",
+            "com"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "auth",
+            "signup"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get All Users",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5Y2E4MjgyMTg4Y2JhOTkxMjQ3ZmYzMiIsImlhdCI6MTc3NjUxNjI5OCwiZXhwIjoxNzc2NjAyNjk4fQ.HHcngqSDkTsijFR69GpcCK8WjTsDTwfN_uyCT8WW1RY",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "https://task-manager-rest-api-node-js-express.onrender.com/api/v1/users/?role=user,manager",
+          "protocol": "https",
+          "host": [
+            "task-manager-rest-api-node-js-express",
+            "onrender",
+            "com"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "users",
+            ""
+          ],
+          "query": [
+            {
+              "key": "role",
+              "value": "user,manager",
+              "type": "text"
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Create User",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5Y2E4MjgyMTg4Y2JhOTkxMjQ3ZmYzMiIsImlhdCI6MTc3NjUxNjI5OCwiZXhwIjoxNzc2NjAyNjk4fQ.HHcngqSDkTsijFR69GpcCK8WjTsDTwfN_uyCT8WW1RY",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"name\": \"Likhon\",\r\n    \"email\": \"likhon@gmail.com\",\r\n    \"password\": 1234567890\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "https://task-manager-rest-api-node-js-express.onrender.com/api/v1/users/",
+          "protocol": "https",
+          "host": [
+            "task-manager-rest-api-node-js-express",
+            "onrender",
+            "com"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "users",
+            ""
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get User",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5Y2E4MjgyMTg4Y2JhOTkxMjQ3ZmYzMiIsImlhdCI6MTc3NjUxNjI5OCwiZXhwIjoxNzc2NjAyNjk4fQ.HHcngqSDkTsijFR69GpcCK8WjTsDTwfN_uyCT8WW1RY",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "https://task-manager-rest-api-node-js-express.onrender.com/api/v1/users/69d67d2fb6ea575f12aa6125",
+          "protocol": "https",
+          "host": [
+            "task-manager-rest-api-node-js-express",
+            "onrender",
+            "com"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "users",
+            "69d67d2fb6ea575f12aa6125"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get Me",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5ZDY1YmM3Y2UzMTY4MTZkZmUyYzJhMyIsImlhdCI6MTc3NjUyNDAzMiwiZXhwIjoxNzc2NjEwNDMyfQ.ZHXEWRziyLF3Bith0CIp8HErlSoM_MI2dtlI4rQsnHk",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "https://task-manager-rest-api-node-js-express.onrender.com/api/v1/users/me",
+          "protocol": "https",
+          "host": [
+            "task-manager-rest-api-node-js-express",
+            "onrender",
+            "com"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "users",
+            "me"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Update Me",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5ZDY1YmM3Y2UzMTY4MTZkZmUyYzJhMyIsImlhdCI6MTc3NjUxNjQ4OSwiZXhwIjoxNzc2NjAyODg5fQ.GMykxONyXhpUMiV1sj_RNlCpzcnDO65J54KBOoWsoP4",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "PATCH",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"name\": \"Saidul\",\r\n    \"role\": \"admin\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "https://task-manager-rest-api-node-js-express.onrender.com/api/v1/users/me",
+          "protocol": "https",
+          "host": [
+            "task-manager-rest-api-node-js-express",
+            "onrender",
+            "com"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "users",
+            "me"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Change Password",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5ZDY1YmM3Y2UzMTY4MTZkZmUyYzJhMyIsImlhdCI6MTc3NjUyMzMwNiwiZXhwIjoxNzc2NjA5NzA2fQ.lBcLNLj-bSoKOvfguAYTjNY-U1QvSEDGXpi6xbUG56w",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "PATCH",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"currentPassword\": \"1234567890Saidul\",\r\n    \"newPassword\": \"1234567890saidul\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "https://task-manager-rest-api-node-js-express.onrender.com/api/v1/auth/change-password",
+          "protocol": "https",
+          "host": [
+            "task-manager-rest-api-node-js-express",
+            "onrender",
+            "com"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "auth",
+            "change-password"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Delete User",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5Y2E4MjgyMTg4Y2JhOTkxMjQ3ZmYzMiIsImlhdCI6MTc3NjUxNjI5OCwiZXhwIjoxNzc2NjAyNjk4fQ.HHcngqSDkTsijFR69GpcCK8WjTsDTwfN_uyCT8WW1RY",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "https://task-manager-rest-api-node-js-express.onrender.com/api/v1/users/69e382fb9442c056075ec040",
+          "protocol": "https",
+          "host": [
+            "task-manager-rest-api-node-js-express",
+            "onrender",
+            "com"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "users",
+            "69e382fb9442c056075ec040"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Reset Password",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5Y2E4MjgyMTg4Y2JhOTkxMjQ3ZmYzMiIsImlhdCI6MTc3NjUxNjI5OCwiZXhwIjoxNzc2NjAyNjk4fQ.HHcngqSDkTsijFR69GpcCK8WjTsDTwfN_uyCT8WW1RY",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "PATCH",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"password\": \"1234567890saidul\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "https://task-manager-rest-api-node-js-express.onrender.com/api/v1/users/69d65bc7ce316816dfe2c2a3/reset-password",
+          "protocol": "https",
+          "host": [
+            "task-manager-rest-api-node-js-express",
+            "onrender",
+            "com"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "users",
+            "69d65bc7ce316816dfe2c2a3",
+            "reset-password"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Update User",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5Y2E4MjgyMTg4Y2JhOTkxMjQ3ZmYzMiIsImlhdCI6MTc3NjUxNjI5OCwiZXhwIjoxNzc2NjAyNjk4fQ.HHcngqSDkTsijFR69GpcCK8WjTsDTwfN_uyCT8WW1RY",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "PATCH",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"role\": \"user\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "https://task-manager-rest-api-node-js-express.onrender.com/api/v1/users/69d65bc7ce316816dfe2c2a3",
+          "protocol": "https",
+          "host": [
+            "task-manager-rest-api-node-js-express",
+            "onrender",
+            "com"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "users",
+            "69d65bc7ce316816dfe2c2a3"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Create Project",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5Y2E4MjgyMTg4Y2JhOTkxMjQ3ZmYzMiIsImlhdCI6MTc3NjUxNjI5OCwiZXhwIjoxNzc2NjAyNjk4fQ.HHcngqSDkTsijFR69GpcCK8WjTsDTwfN_uyCT8WW1RY",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"title\": \"Phone manager\",\r\n    \"owner\": \"69ca96f00cdf56125bb062ef\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "https://task-manager-rest-api-node-js-express.onrender.com/api/v1/projects/",
+          "protocol": "https",
+          "host": [
+            "task-manager-rest-api-node-js-express",
+            "onrender",
+            "com"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "projects",
+            ""
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get All Projects",
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      },
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5Y2E4MjgyMTg4Y2JhOTkxMjQ3ZmYzMiIsImlhdCI6MTc3NjUxNjI5OCwiZXhwIjoxNzc2NjAyNjk4fQ.HHcngqSDkTsijFR69GpcCK8WjTsDTwfN_uyCT8WW1RY",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"title\": \"Phone manager\",\r\n    \"owner\": \"69ca96f00cdf56125bb062ef\"\r\n}"
+        },
+        "url": {
+          "raw": "https://task-manager-rest-api-node-js-express.onrender.com/api/v1/projects/",
+          "protocol": "https",
+          "host": [
+            "task-manager-rest-api-node-js-express",
+            "onrender",
+            "com"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "projects",
+            ""
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get Project",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5YzkzNTUxYzZmNWIxOTdiYzY3MzBjNyIsImlhdCI6MTc3NjUxNjQ0MywiZXhwIjoxNzc2NjAyODQzfQ.4Jb_MVwO9sXoM77Nifh8Eo5o30WOefWJvlrI5YvtJ54",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "https://task-manager-rest-api-node-js-express.onrender.com/api/v1/projects/69e39d09761176a7989bd7fa",
+          "protocol": "https",
+          "host": [
+            "task-manager-rest-api-node-js-express",
+            "onrender",
+            "com"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "projects",
+            "69e39d09761176a7989bd7fa"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get My Projects",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5Y2E5NmYwMGNkZjU2MTI1YmIwNjJlZiIsImlhdCI6MTc3NjUxNjM5NywiZXhwIjoxNzc2NjAyNzk3fQ.4DHbVaaOkr_D9LWb8CmMSWjIzTokP7aidt4lGEQQ_lk",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "https://task-manager-rest-api-node-js-express.onrender.com/api/v1/projects/my",
+          "protocol": "https",
+          "host": [
+            "task-manager-rest-api-node-js-express",
+            "onrender",
+            "com"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "projects",
+            "my"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Update Project",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5Y2E5NmYwMGNkZjU2MTI1YmIwNjJlZiIsImlhdCI6MTc3NjUxNjM5NywiZXhwIjoxNzc2NjAyNzk3fQ.4DHbVaaOkr_D9LWb8CmMSWjIzTokP7aidt4lGEQQ_lk",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "PATCH",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"title\": \"weather app\",\r\n    \"status\": \"active\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "https://task-manager-rest-api-node-js-express.onrender.com/api/v1/projects/69e39db9761176a7989bd803",
+          "protocol": "https",
+          "host": [
+            "task-manager-rest-api-node-js-express",
+            "onrender",
+            "com"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "projects",
+            "69e39db9761176a7989bd803"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Delete Project",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5YWYzMTdlMzU1N2FmYjkzNDdlMWY4YyIsImlhdCI6MTc3NjUxNjM1OCwiZXhwIjoxNzc2NjAyNzU4fQ.3MZJgd64K1HJbM4PGerlb1JYAyqhWzb7_-v85n1JhYQ",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "https://task-manager-rest-api-node-js-express.onrender.com/api/v1/projects/69e39d09761176a7989bd7fa",
+          "protocol": "https",
+          "host": [
+            "task-manager-rest-api-node-js-express",
+            "onrender",
+            "com"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "projects",
+            "69e39d09761176a7989bd7fa"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get All Tasks",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5Y2E4MjgyMTg4Y2JhOTkxMjQ3ZmYzMiIsImlhdCI6MTc3NjUxNjI5OCwiZXhwIjoxNzc2NjAyNjk4fQ.HHcngqSDkTsijFR69GpcCK8WjTsDTwfN_uyCT8WW1RY",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "https://task-manager-rest-api-node-js-express.onrender.com/api/v1/tasks/",
+          "protocol": "https",
+          "host": [
+            "task-manager-rest-api-node-js-express",
+            "onrender",
+            "com"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "tasks",
+            ""
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Create Task",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5Y2E4MjgyMTg4Y2JhOTkxMjQ3ZmYzMiIsImlhdCI6MTc3NjUxNjI5OCwiZXhwIjoxNzc2NjAyNjk4fQ.HHcngqSDkTsijFR69GpcCK8WjTsDTwfN_uyCT8WW1RY",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"title\": \"Employee Model Design\",\r\n    \"project\": \"69ca856e3914c7697e952ab7\"\r\n\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "https://task-manager-rest-api-node-js-express.onrender.com/api/v1/tasks/",
+          "protocol": "https",
+          "host": [
+            "task-manager-rest-api-node-js-express",
+            "onrender",
+            "com"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "tasks",
+            ""
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get My Tasks",
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      },
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5ZDY1YmM3Y2UzMTY4MTZkZmUyYzJhMyIsImlhdCI6MTc3NjUyNDAzMiwiZXhwIjoxNzc2NjEwNDMyfQ.ZHXEWRziyLF3Bith0CIp8HErlSoM_MI2dtlI4rQsnHk",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"title\": \"Employee Model Design\",\r\n    \"project\": \"69ca856e3914c7697e952ab7\"\r\n\r\n}"
+        },
+        "url": {
+          "raw": "https://task-manager-rest-api-node-js-express.onrender.com/api/v1/tasks/my",
+          "protocol": "https",
+          "host": [
+            "task-manager-rest-api-node-js-express",
+            "onrender",
+            "com"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "tasks",
+            "my"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get Task",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5ZDY1YmM3Y2UzMTY4MTZkZmUyYzJhMyIsImlhdCI6MTc3NjUyNDAzMiwiZXhwIjoxNzc2NjEwNDMyfQ.ZHXEWRziyLF3Bith0CIp8HErlSoM_MI2dtlI4rQsnHk",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "https://task-manager-rest-api-node-js-express.onrender.com/api/v1/tasks/69e3b2548fc527f0b6c7ec35",
+          "protocol": "https",
+          "host": [
+            "task-manager-rest-api-node-js-express",
+            "onrender",
+            "com"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "tasks",
+            "69e3b2548fc527f0b6c7ec35"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Update Task",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5ZDY1YmM3Y2UzMTY4MTZkZmUyYzJhMyIsImlhdCI6MTc3NjUyNDAzMiwiZXhwIjoxNzc2NjEwNDMyfQ.ZHXEWRziyLF3Bith0CIp8HErlSoM_MI2dtlI4rQsnHk",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "PATCH",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"priority\": \"high\",\r\n    \"status\": \"todo\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "https://task-manager-rest-api-node-js-express.onrender.com/api/v1/tasks/69e3b2548fc527f0b6c7ec35",
+          "protocol": "https",
+          "host": [
+            "task-manager-rest-api-node-js-express",
+            "onrender",
+            "com"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "tasks",
+            "69e3b2548fc527f0b6c7ec35"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Delete Task",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY5Y2E5NmYwMGNkZjU2MTI1YmIwNjJlZiIsImlhdCI6MTc3NjUxNjM5NywiZXhwIjoxNzc2NjAyNzk3fQ.4DHbVaaOkr_D9LWb8CmMSWjIzTokP7aidt4lGEQQ_lk",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "DELETE",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"title\": \"Employee Model Design\",\r\n    \"project\": \"69ca856e3914c7697e952ab7\"\r\n\r\n}"
+        },
+        "url": {
+          "raw": "https://task-manager-rest-api-node-js-express.onrender.com/api/v1/tasks/69e3b2548fc527f0b6c7ec35",
+          "protocol": "https",
+          "host": [
+            "task-manager-rest-api-node-js-express",
+            "onrender",
+            "com"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "tasks",
+            "69e3b2548fc527f0b6c7ec35"
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}
