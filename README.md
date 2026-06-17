@@ -194,8 +194,12 @@ You can test all API endpoints using Postman.
 ### 🔽 Import Collection
 
 1. Open Postman
-2. Click **Import**
-3. Select the file:
+2. Click **Import** → **File**
+3. Select the JSON file from the `postman/` folder
+4. Set the `baseUrl` variable to either(optional):
+   - `http://localhost:3000/api/v1` (local)
+   - `https://task-manager-rest-api-node-js-express.onrender.com/api/v1` (deployed)
+5. Run `/auth/login` first to get a token, then set it as the `token` variable for authenticated routes(optional)
 
 ---
 
